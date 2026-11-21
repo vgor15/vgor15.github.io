@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://vgor15.github.io/</loc></url>
+  <url><loc>https://vgor15.github.io/about</loc></url>
+  <url><loc>https://vgor15.github.io/lab</loc></url>
+  <url><loc>https://vgor15.github.io/lab/can-bus</loc></url>
+  <url><loc>https://vgor15.github.io/lab/glyph-studio</loc></url>
+  <url><loc>https://vgor15.github.io/lab/logic-analyzer</loc></url>
+  <url><loc>https://vgor15.github.io/lab/register-flipper</loc></url>
+  <url><loc>https://vgor15.github.io/lab/led-matrix</loc></url>
+  <url><loc>https://vgor15.github.io/lab/shell</loc></url>
+  <url><loc>https://vgor15.github.io/writing</loc></url>
+  <url><loc>https://vgor15.github.io/writing/two-ecus-one-bus</loc></url>
+  <url><loc>https://vgor15.github.io/writing/a-shell-is-a-loop</loc></url>
+  <url><loc>https://vgor15.github.io/bench</loc></url>
+  <url><loc>https://vgor15.github.io/contact</loc></url>
+  <url><loc>https://vgor15.github.io/changelog</loc></url>
+</urlset>

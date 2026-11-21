@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" class="no-js" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>A shell is just a loop :: Vyom Gor</title>
+  <meta name="description" content="Read, split, fork, exec, wait, repeat. What writing imperfect_cell taught me about processes in C.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://app.cal.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.cal.com; font-src 'self'; connect-src 'self' https://*.cal.com; frame-src 'self' https://cal.com https://*.cal.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <script src="/assets/js/theme-boot.js"></script>
+</head>
+<body data-page="post">
+  <main id="main" class="page">
+    <article class="post">
+      <div class="post__meta"><a class="tag" href="/writing">← Writing</a><span class="tag">N°02</span><span class="tag">Linux</span><span class="label">Nov 21 2026 · 5 min</span></div>
+      <h1>A shell is just a loop</h1>
+      <p class="lede" data-rv>Every shell you have used is a loop: read a line, split it, run it, wait, repeat. Writing imperfect_cell in C made that loop concrete, and taught me more about processes than any diagram did.</p>
+
+      <h2 data-rv>The whole program</h2>
+      <p data-rv>Strip away the colours and the Dragon Ball jokes and the heart of <code>cell.c</code> is six lines:</p>
+<pre class="code" data-rv><span class="k">while</span> ((line = cell_read_line())) {
+    args = cell_split_line(line);
+    <span class="k">if</span> (args[<span class="n">0</span>] &amp;&amp; !strcmp(args[<span class="n">0</span>], <span class="n">"cd"</span>))
+        Chdir(args[<span class="n">1</span>]);
+    cell_execute(args);
+    free(line);
+    free(args);
+}</pre>
+
+      <h2 data-rv>Read</h2>
+      <p data-rv><code>getline()</code> with a <code>NULL</code> buffer lets libc allocate a line of any length, which is one less fixed-size buffer to overflow. The prompt is only printed when stdin is a terminal (<code>isatty</code>). It shows the working directory from <code>getcwd()</code> and, when the last command failed, its exit status in red: <code>🦠[~/src][69]🦠 &gt;</code>.</p>
+
+      <h2 data-rv>Split</h2>
+      <p data-rv><code>strtok()</code> cuts the line on whitespace into an array of pointers that starts at <code>BUFSIZ</code> entries and doubles with <code>realloc</code> when it fills. The array ends in <code>NULL</code>, because that's exactly what <code>execvp</code> expects.</p>
+
+      <h2 data-rv>Built-ins first</h2>
+      <p data-rv>Some commands must run inside the shell itself. The built-ins live in a table of names and function pointers, closed with a <code>NULL</code> sentinel so the lookup is a simple walk:</p>
+<pre class="code" data-rv>t_builtin g_builtin[] = {
+    {.builtin_name = <span class="n">"echo"</span>, .foo = cell_echo},
+    {.builtin_name = <span class="n">"env"</span>,  .foo = cell_env},
+    {.builtin_name = <span class="n">"exit"</span>, .foo = cell_exit},
+    {.builtin_name = NULL},
+};</pre>
+      <p data-rv><code>env</code> just walks <code>extern char **environ</code>. <code>cd</code> is the classic case for a built-in: <code>chdir()</code> in a child process changes only the child's directory, which disappears a moment later.</p>
+
+      <h2 data-rv>Fork, exec, wait</h2>
+      <p data-rv>Everything else is an external program. <code>fork()</code> returns twice: 0 in the child, the child's PID in the parent. The child replaces itself with the program through <code>execvp()</code>, which searches <code>PATH</code>. The parent blocks in <code>wait()</code> and keeps <code>WEXITSTATUS</code> for the next prompt.</p>
+<pre class="code" data-rv><span class="k">if</span> (Fork() == CELL_JR)          <span class="c">/* CELL_JR == 0: we are the child */</span>
+    Execvp(args[<span class="n">0</span>], args);       <span class="c">/* only returns on failure        */</span>
+<span class="k">else</span>
+    Wait(&amp;status);</pre>
+
+      <h2 data-rv>Fail loudly, in one place</h2>
+      <p data-rv>Every system call goes through a capitalised wrapper (<code>Fork</code>, <code>Execvp</code>, <code>Wait</code>, <code>Malloc</code>, <code>Realloc</code>, <code>Getline</code>, <code>Getcwd</code>, <code>Chdir</code>) that checks the return value and prints a coloured <code>perror</code>. The main code reads like the happy path, and nothing fails silently. When <code>execvp</code> can't find a program, the child prints <code>💥CELL_Jr failed💥</code> and exits with <code>EX_UNAVAILABLE</code> (69).</p>
+
+      <h2 data-rv>What I'd fix next</h2>
+      <ul data-rv>
+        <li><b>Make <code>cd</code> a real built-in.</b> Today <code>cd</code> runs in the loop, then also falls through to <code>cell_execute</code>, which forks and tries to <code>execvp("cd")</code>. The directory does change, but the prompt turns red with status 69. Moving it into the table fixes both.</li>
+        <li><b>Pipes and redirection:</b> <code>pipe()</code>, <code>dup2()</code> and one child per stage.</li>
+        <li><b>Signals.</b> Ctrl-C should stop the child, not the shell.</li>
+      </ul>
+      <p class="post__note" data-rv>Press <code>`</code> anywhere on this site, or open the <a href="/lab/shell"><b>imperfect_cell lab</b></a>, for a browser version with the same prompt.</p>
+
+      <div class="post__end">
+        <a class="btn btn--ink" href="https://github.com/vgor15/imperfect_cell" target="_blank" rel="noopener noreferrer">Source on GitHub ↗</a>
+        <a class="btn" href="/writing/two-ecus-one-bus">← Two ECUs, one bus</a>
+      </div>
+    </article>
+  </main>
+  <script src="/assets/vendor/gsap.min.js"></script>
+  <script src="/assets/vendor/SplitText.min.js"></script>
+  <script src="/assets/vendor/lenis.min.js"></script>
+  <script src="/assets/js/data.js"></script>
+  <script src="/assets/js/core.js"></script>
+  <script src="/assets/js/post.js"></script>
+</body>
+</html>

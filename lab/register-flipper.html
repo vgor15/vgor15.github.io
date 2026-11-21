@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" class="no-js" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Register Flipper :: Vyom Gor</title>
+  <meta name="description" content="Flip LPC2129 GPIO port bits and get the IODIR, IOSET and IOCLR lines for free.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://app.cal.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.cal.com; font-src 'self'; connect-src 'self' https://*.cal.com; frame-src 'self' https://cal.com https://*.cal.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <script src="/assets/js/theme-boot.js"></script>
+</head>
+<body data-page="lab-exp">
+  <main id="main" class="exp">
+    <header class="exp__meta">
+      <div class="crumbs"><a class="tag" href="/lab">← Lab</a><span class="tag">UI</span><span class="tag tag--new">New</span></div>
+      <h1>Register Flipper</h1>
+      <p>On the LPC2129 you never write a pin directly: you set direction in <code>IODIR</code>, drive high with <code>IOSET</code> and low with <code>IOCLR</code>, where writing 1 acts and 0 is ignored. Build a mask and try it.</p>
+    </header>
+    <section class="exp__stage">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+        <div class="seg-inline" role="group" aria-label="Port"><button type="button" data-port="0" class="is-on">Port 0</button><button type="button" data-port="1">Port 1</button></div>
+        <span class="label">Presets</span>
+        <button class="btn" type="button" data-preset="leds">Node B LEDs</button>
+        <button class="btn" type="button" data-preset="sw">Node A switches</button>
+        <button class="btn" type="button" data-preset="lcd">LCD bus</button>
+      </div>
+      <div class="bits" id="bits" role="group" aria-label="Mask bits 31 to 0"></div>
+      <div class="readout"><div><span class="label">Hex</span><b id="hex"></b></div><div><span class="label">Decimal</span><b id="dec"></b></div><div><span class="label">Binary</span><b id="bin" style="font-size:12px"></b></div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn--ink" type="button" data-act="dir">IODIR |= mask</button>
+        <button class="btn btn--ink" type="button" data-act="set">IOSET = mask</button>
+        <button class="btn btn--ink" type="button" data-act="clr">IOCLR = mask</button>
+        <button class="btn" type="button" data-act="none">Clear mask</button>
+      </div>
+      <p class="label" style="margin-top:18px">Pins · 31 → 0 <span id="pinstate" style="margin-left:10px;color:var(--ink)"></span></p>
+      <div class="pins" id="pins" aria-hidden="true"></div>
+      <pre class="code" id="code" style="margin-top:16px"></pre>
+    </section>
+  </main>
+  <script src="/assets/vendor/gsap.min.js"></script>
+  <script src="/assets/vendor/lenis.min.js"></script>
+  <script src="/assets/js/data.js"></script>
+  <script src="/assets/js/core.js"></script>
+  <script src="/assets/js/lab/register-flipper.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# local tooling
+.claude/
+.vscode/
+*.log
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# never publish work/project archives or private documents
+*.zip
+*.tar
+*.tar.gz
+*.pdf
+!assets/Vyom-Gor-Resume.pdf

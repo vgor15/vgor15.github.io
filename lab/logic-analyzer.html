@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" class="no-js" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Logic Analyzer :: Vyom Gor</title>
+  <meta name="description" content="Type a byte and see it on the wire as UART, I2C or SPI, decoded.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://app.cal.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.cal.com; font-src 'self'; connect-src 'self' https://*.cal.com; frame-src 'self' https://cal.com https://*.cal.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <script src="/assets/js/theme-boot.js"></script>
+</head>
+<body data-page="lab-exp">
+  <main id="main" class="exp">
+    <header class="exp__meta">
+      <div class="crumbs"><a class="tag" href="/lab">← Lab</a><span class="tag">CANVAS</span><span class="tag tag--new">New</span></div>
+      <h1>Logic Analyzer</h1>
+      <p>Three serial buses I use on the bench, side by side. Type text or hex bytes (<code>0x56 0x47</code>) and watch the same data framed as UART, I2C or SPI, with each byte decoded underneath.</p>
+    </header>
+    <section class="exp__stage la">
+      <div class="la-in">
+        <div class="seg-inline" role="group" aria-label="Protocol">
+          <button type="button" data-proto="uart" class="is-on">UART</button>
+          <button type="button" data-proto="i2c">I2C</button>
+          <button type="button" data-proto="spi">SPI</button>
+        </div>
+        <label class="label">Data <input id="bytes" type="text" value="VG" maxlength="40" aria-label="Bytes to send"></label>
+        <label class="label" id="addrWrap" hidden>Addr <input id="addr" type="text" value="0x50" maxlength="4" style="width:70px" aria-label="I2C address"></label>
+        <span class="label" id="lainfo"></span>
+      </div>
+      <canvas id="scope" aria-label="Waveform"></canvas>
+    </section>
+  </main>
+  <script src="/assets/vendor/gsap.min.js"></script>
+  <script src="/assets/vendor/lenis.min.js"></script>
+  <script src="/assets/js/data.js"></script>
+  <script src="/assets/js/core.js"></script>
+  <script src="/assets/js/lab/logic-analyzer.js"></script>
+</body>
+</html>
