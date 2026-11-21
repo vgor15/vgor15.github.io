@@ -23,7 +23,7 @@ const SITE = {
   // Email is assembled only when a visitor asks for it (keeps it out of the HTML).
   mail: { u: [118, 121, 111, 109, 103, 111, 114, 49, 53, 48, 51], d: [103, 109, 97, 105, 108, 46, 99, 111, 109] },
   cal: "vyom-gor-1503/15min",
-  resume: "", // set to "/assets/Vyom-Gor-Resume.pdf" once a phone-free PDF is added
+  resume: "/resume", // web CV (print to PDF); phone-free by design
   photo: "",  // set to "/assets/img/profile.jpg" once the portrait is added
 
   socials: [
@@ -175,10 +175,16 @@ const SITE = {
       excerpt: "How a speed pot, a temperature sensor and three switches on one LPC2129 end up on another board's LCD, one CAN frame at a time." },
     { n: "02", slug: "a-shell-is-a-loop", title: "A shell is just a loop", tag: "LINUX", date: "NOV 21 2026", read: "5 MIN",
       excerpt: "Read, split, fork, exec, wait, repeat. What writing imperfect_cell taught me about processes in C." },
+    { n: "03", slug: "the-flag-that-never-changed", title: "The flag that never changed", tag: "EMBEDDED", date: "NOV 21 2026", read: "4 MIN",
+      excerpt: "An ISR sets a flag and main() waits for it. Why my CAN code got away without volatile, and the one-line loop where it wouldn't." },
+    { n: "04", slug: "pointers-at-the-lab-bench", title: "Pointers at the lab bench", tag: "C", date: "NOV 21 2026", read: "5 MIN",
+      excerpt: "What I learned explaining pointers to a new batch every week as a lab coordinator: the three pictures that make it click." },
   ],
 
   /* ---------- What's new / changelog ---------- */
   changelog: [
+    { type: "Site", date: "2026-11-22", label: "NOV", title: "Resume, Now and Notes", desc: "A printable web CV, what I'm on right now, and short TIL notes.", href: "/resume" },
+    { type: "Writing", date: "2026-11-22", label: "NOV", title: "The flag that never changed", desc: "volatile and ISRs, with my own CAN code.", href: "/writing/the-flag-that-never-changed" },
     { type: "Site", date: "2026-11-21", label: "NOV", title: "The new site is live", desc: "Rebuilt from scratch: two wheels, a lab and a bus you can drive.", href: "/" },
     { type: "Lab", date: "2026-11-21", label: "NOV", title: "CAN Bus Lab", desc: "My Vector India dashboard, replayed in the browser.", href: "/lab/can-bus" },
     { type: "Lab", date: "2026-11-21", label: "NOV", title: "Glyph Studio", desc: "Design LCD glyphs, export the C array.", href: "/lab/glyph-studio" },
@@ -192,6 +198,70 @@ const SITE = {
   ],
 
   credit: { text: "Design inspired by Carter Ogunsola", url: "https://carterogunsola.com" },
+
+  /* ---------- Journey (About map) ---------- */
+  places: [
+    { name: "Kutch", lat: 23.24, lon: 69.67, years: "2018–21", what: "Diploma" },
+    { name: "Ahmedabad", lat: 23.02, lon: 72.57, years: "2022–25", what: "B.Tech · 9.08" },
+    { name: "Bengaluru", lat: 12.97, lon: 77.59, years: "2025–", what: "Vector India → VVDN" },
+  ],
+
+  /* ---------- Certificates (add `file` with a scan path to link the original) ---------- */
+  certificates: [
+    { title: "Embedded Systems Certification", org: "Vector India", when: "May – Nov 2025", note: "C, C++, Embedded C, RTOS, Linux system programming, hands-on labs", file: "" },
+    { title: "MYSY Scholarship", org: "Government of Gujarat", when: "B.Tech · 2022–25", note: "Mukhyamantri Yuva Swavalamban Yojana, for academic excellence", file: "" },
+    { title: "B.Tech, Computer Engineering", org: "Silver Oak University", when: "2025", note: "Graduated with a CGPA of 9.08 / 10", file: "" },
+  ],
+
+  /* ---------- Testimonials: section stays hidden until at least one real quote is added ---------- */
+  testimonials: [
+    // { quote: "…", name: "…", role: "Trainer, Vector India" },
+  ],
+
+  /* ---------- /now ---------- */
+  now: {
+    updated: "2026-11-21",
+    building: [
+      "Production-test tooling for embedded Linux hardware at VVDN, alongside the team that ships it.",
+      "This site: the CAN Bus Lab, Glyph Studio and imperfect_cell in the browser.",
+    ],
+    learning: [
+      "Linux system programming in a real codebase: threads, systemd services, I2C from userspace.",
+      "Data structures in C++, one LeetCode problem at a time.",
+    ],
+    next: [
+      "imperfect_cell v2: pipes, redirection and proper signal handling.",
+      "CAN dashboard v2: separate IDs for events, edge-triggered switches, error counters.",
+    ],
+  },
+
+  /* ---------- /notes (today I learned) ---------- */
+  notes: [
+    { tag: "C", title: "volatile is for things that change behind your back", body: "A flag set inside an ISR and polled in main() must be volatile, or the compiler may read it once and loop forever on a stale copy." },
+    { tag: "ARM7", title: "IOSET and IOCLR only listen to ones", body: "On the LPC2129, writing 1 to a bit in IOSET drives the pin high and IOCLR drives it low. Writing 0 does nothing, so no read-modify-write is needed." },
+    { tag: "CAN", title: "Five in a row gets a stuff bit", body: "After five identical bits the transmitter inserts one opposite bit so receivers keep their clocks in sync. The receiver strips it back out." },
+    { tag: "HW", title: "MCP9700: 500 mV means 0 °C", body: "The sensor outputs 500 mV at 0 °C plus 10 mV per degree, so T = (V − 0.5) / 0.01. Forget the offset and every room is 50 °C." },
+    { tag: "LCD", title: "Eight custom glyphs live at 0x40", body: "An HD44780 has 64 bytes of CGRAM: eight 5×8 characters. Set address 0x40, write eight rows per glyph, then print them as characters 0–7." },
+    { tag: "Linux", title: "fork() returns twice", body: "Once in the parent with the child's PID, once in the child with 0. Every shell starts its work by checking which one it is." },
+    { tag: "C", title: "strtok() remembers where it stopped", body: "It keeps hidden static state between calls, so it isn't reentrant or thread-safe. In threaded code, use strtok_r()." },
+    { tag: "Linux", title: "cd has to be a built-in", body: "chdir() only changes the calling process's directory. Run it in a child and the change disappears when the child exits." },
+    { tag: "C", title: "getline() can allocate for you", body: "Pass a NULL pointer and a size of 0 and getline() mallocs a buffer big enough for the whole line. You still have to free() it." },
+  ],
+
+  /* ---------- /resume ---------- */
+  resumeDoc: {
+    headline: "Embedded Software Engineer",
+    summary: "Embedded software engineer working in C and C++ close to the hardware: ARM7 microcontrollers, CAN, I2C, SPI and UART, and Linux system programming. Currently at VVDN Technologies on production-test tooling for embedded Linux hardware. B.Tech in Computer Engineering (9.08 CGPA).",
+    projects: [
+      { title: "CAN Automotive Dashboard (two-node CAN 2.0B on LPC2129)", when: "2025 · Vector India · team of 3", link: "github.com/vgor15/LPC2129_CAN_Automotive_Dashboard",
+        points: ["Node A reads a speed potentiometer and an MCP9700 sensor over the ADC plus three switches, and transmits frame 0x500 on CAN2, paced by a Timer1 interrupt.",
+                 "Node B decodes frames in a CAN2 receive interrupt and drives a 16×2 HD44780 LCD (4-bit mode) with custom CGRAM glyphs, plus status LEDs.",
+                 "Developed in Embedded C with Keil µVision, flashed with Flash Magic, debugged over UART0."] },
+      { title: "imperfect_cell: a Unix-like shell in C", when: "Jan 2026", link: "github.com/vgor15/imperfect_cell",
+        points: ["Read–eval–execute loop with getline, strtok tokenisation and built-ins (echo, env, exit).",
+                 "Runs external programs with fork, execvp and wait; error-checked wrappers for every system call."] },
+    ],
+  },
 };
 
 window.SITE = SITE;

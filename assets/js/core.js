@@ -46,7 +46,7 @@
 
   /* ---------- small helpers ---------- */
   const email = () => String.fromCharCode(...S.mail.u) + "@" + String.fromCharCode(...S.mail.d);
-  const pageLabel = { home: null, about: "About", lab: "Lab", "lab-exp": "Lab", writing: "Writing", post: "Writing", bench: "Bench", contact: "Contact", record: "Record", changelog: "Log", notfound: "404" };
+  const pageLabel = { home: null, about: "About", lab: "Lab", "lab-exp": "Lab", writing: "Writing", post: "Writing", bench: "Bench", contact: "Contact", record: "Record", changelog: "Log", notfound: "404", resume: "Resume", now: "Now", notes: "Notes" };
 
   /* ============================================================
      CHROME
@@ -63,6 +63,7 @@
         <span class="hud__chip">VYOM::<b class="js-here">--</b></span>
         <span class="hud__chip"><i class="live blink"></i>BUS::<b>0x500</b></span>
         <span class="hud__chip">STATUS::<b>${S.status}</b></span>
+        <button class="hud__chip js-snd" type="button" aria-pressed="false" aria-label="Toggle sound">SND::<b>OFF</b></button>
       </div>`);
     D.body.append(hud);
 
@@ -202,6 +203,9 @@
     const items = [
       { g: "Pages", label: "Home", path: "/", go: "/" },
       ...S.nav.map((n) => ({ g: "Pages", label: n.label, path: n.href, go: n.href })),
+      { g: "Pages", label: "Resume", path: "/resume", go: "/resume", kw: "cv pdf" },
+      { g: "Pages", label: "Now", path: "/now", go: "/now", kw: "current" },
+      { g: "Pages", label: "Notes", path: "/notes", go: "/notes", kw: "til today i learned" },
       ...S.lab.map((l) => ({ g: "Lab", label: l.title, path: "/lab/" + l.slug, go: "/lab/" + l.slug, kw: l.tags.join(" ") })),
       ...S.writing.map((w) => ({ g: "Writing", label: w.title, path: "/writing/" + w.slug, go: "/writing/" + w.slug })),
       { g: "Tools", label: "Open shell", path: "`", act: () => openShell(), kw: "terminal imperfect_cell cell" },
@@ -210,6 +214,7 @@
       { g: "Tools", label: "Record", path: "/record", go: "/record" },
       { g: "Tools", label: "Changelog", path: "/changelog", go: "/changelog", kw: "what's new" },
       { g: "Tools", label: "Privacy & credits", path: "i", act: () => openInfo() },
+      { g: "Tools", label: "Toggle sound", path: "snd", act: () => toggleSound(), kw: "audio mute" },
       ...S.socials.map((s) => ({ g: "Elsewhere", label: s.label, path: "↗", href: s.url })),
       { g: "Theme", label: "Light", path: "", act: () => setTheme("light") },
       { g: "Theme", label: "Dark", path: "", act: () => setTheme("dark") },
@@ -500,6 +505,93 @@
     gsap.from(st.words, { yPercent: 110, duration: 1.05, ease: "power4.out", stagger: 0.035, delay });
   }
 
+  /* ---------- sound (synthesised, off by default) ---------- */
+  const SND = { on: store.get("vg-sound") === "on", ctx: null, noise: null };
+  function audio() {
+    if (!SND.ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      SND.ctx = new AC();
+      const len = SND.ctx.sampleRate * 0.05;
+      SND.noise = SND.ctx.createBuffer(1, len, SND.ctx.sampleRate);
+      const d = SND.noise.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+    }
+    if (SND.ctx.state === "suspended") SND.ctx.resume();
+    return SND.ctx;
+  }
+  function sfx(name) {
+    if (!SND.on) return;
+    const c = audio(); if (!c) return;
+    const t = c.currentTime;
+    const blip = (freq, dur, vol, type = "sine", at = 0) => {
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type; o.frequency.setValueAtTime(freq, t + at);
+      g.gain.setValueAtTime(vol, t + at); g.gain.exponentialRampToValueAtTime(0.0001, t + at + dur);
+      o.connect(g).connect(c.destination); o.start(t + at); o.stop(t + at + dur + 0.02);
+    };
+    const click = (vol, at = 0, hp = 1800) => {
+      const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+      s.buffer = SND.noise; f.type = "highpass"; f.frequency.value = hp; g.gain.value = vol;
+      s.connect(f).connect(g).connect(c.destination); s.start(t + at);
+    };
+    if (name === "tick") blip(2100, 0.03, 0.025);
+    else if (name === "click") click(0.22);
+    else if (name === "key") click(0.12, 0, 3200);
+    else if (name === "relay") { click(0.35, 0, 900); click(0.22, 0.05, 1400); }
+    else if (name === "buzz") blip(2300, 0.09, 0.03, "square");
+    else if (name === "boot") { blip(880, 0.08, 0.04); blip(1320, 0.12, 0.04, "sine", 0.09); }
+  }
+  function toggleSound(force) {
+    SND.on = typeof force === "boolean" ? force : !SND.on;
+    store.set("vg-sound", SND.on ? "on" : "off");
+    qsa(".js-snd").forEach((b) => { b.querySelector("b").textContent = SND.on ? "ON" : "OFF"; b.setAttribute("aria-pressed", String(SND.on)); });
+    if (SND.on) { audio(); sfx("boot"); }
+  }
+  function initSound() {
+    toggleSound(SND.on);
+    D.addEventListener("click", (e) => {
+      if (e.target.closest(".js-snd")) { toggleSound(); return; }
+      if (e.target.closest("a, button")) sfx("click");
+    });
+    let lastHover = null;
+    D.addEventListener("mouseover", (e) => {
+      const a = e.target.closest(".navpill a, .pal__item, .wn__item, .lab-row__go, .btn");
+      if (a && a !== lastHover) { lastHover = a; sfx("tick"); }
+      if (!a) lastHover = null;
+    });
+  }
+
+  /* ---------- first-visit boot log (home only) ---------- */
+  function bootLog() {
+    if (PAGE !== "home" || REDUCED || store.get("vg-booted", sessionStorage) || !window.gsap) return;
+    store.set("vg-booted", "1", sessionStorage);
+    const lines = [
+      `U-Boot 2026.11-vg · <b>LPC2129</b> · ARM7TDMI-S @ 60 MHz`,
+      `SRAM: 16 KiB · Flash: 256 KiB <span class="ok">OK</span>`,
+      `[ 0.000000] Booting <b>${S.name}</b> · ${S.role.toLowerCase()}`,
+      `[ 0.011204] can2: up · id <b>0x500</b> · dlc 8 <span class="ok">OK</span>`,
+      `[ 0.024871] lcd: HD44780 16×2 · CGRAM 8 glyphs loaded <span class="ok">OK</span>`,
+      `[ 0.031557] uart0: 9600 8N1 <span class="ok">OK</span>`,
+      `[ 0.046020] fs: mounted /lab /writing /bench /resume`,
+      `[ 0.058331] shell: imperfect_cell ready · press \` anytime`,
+      `[ 0.071942] status: <b>${S.status}</b>`,
+      `[ 0.080000] ${S.city.toLowerCase()} · ${S.tzLabel} · welcome.`,
+    ];
+    const el = make(`<div class="boot" role="status" aria-label="Loading"><span class="boot__skip">Click to skip</span><div class="boot__log"></div><div class="boot__big" aria-hidden="true"><span><i style="display:block;font-style:normal">${S.first}</i></span><span><i style="display:block;font-style:normal;color:var(--gold)">${S.name.split(" ")[1]}</i></span></div></div>`);
+    D.body.append(el);
+    const log = qs(".boot__log", el);
+    const tl = gsap.timeline({ onComplete: done });
+    gsap.set(qsa(".boot__big i", el), { yPercent: 110 });
+    lines.forEach((l, i) => tl.call(() => { log.insertAdjacentHTML("beforeend", (i ? "\n" : "") + l); sfx("key"); }, null, i * 0.11));
+    tl.to(qsa(".boot__big i", el), { yPercent: 0, duration: 0.8, ease: "power4.out", stagger: 0.08 }, 0.35);
+    tl.to(el, { yPercent: -100, duration: 0.85, ease: "power4.inOut" }, "+=0.45");
+    function done() { el.remove(); }
+    const skip = () => { tl.progress(1); };
+    el.addEventListener("click", skip);
+    D.addEventListener("keydown", skip, { once: true });
+  }
+
   /* ---------- prev / next on lab experiment pages ---------- */
   function labPager() {
     const i = S.lab.findIndex((l) => PATH === "/lab/" + l.slug);
@@ -509,7 +601,7 @@
   }
 
   /* ============================================================ */
-  const V = (window.V = { qs, qsa, make, I, S, store, email, copyEmail, mailto, toast, openCal, openShell, openInfo, openOverlay, closeOverlay, navigate, useLenis, reveals, splitIn, setTheme, REDUCED, PATH, PAGE, lenis: null, openPalette: () => {} });
+  const V = (window.V = { qs, qsa, make, I, S, store, email, copyEmail, mailto, toast, openCal, openShell, openInfo, openOverlay, closeOverlay, navigate, useLenis, reveals, splitIn, setTheme, sfx, toggleSound, REDUCED, PATH, PAGE, lenis: null, openPalette: () => {} });
 
   function boot() {
     if (window.gsap) {
@@ -524,7 +616,9 @@
     initMobileMenu();
     initKeys();
     initHeaderScroll();
+    initSound();
     initTransitions();
+    bootLog();
     if (PAGE === "lab-exp") labPager();
     D.dispatchEvent(new CustomEvent("vg:ready"));
     if (window.gsap && !REDUCED) {

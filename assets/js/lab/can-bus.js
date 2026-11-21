@@ -50,6 +50,7 @@ document.addEventListener("vg:ready", () => {
   }
   function pressSwitch(i) {
     A.flags[i] ^= 1;                                   // flagN ^= 1
+    window.V.sfx("relay");
     const code = codes[i][A.flags[i] ? 0 : 1];
     ui.sw[i].classList.toggle("is-on", !!A.flags[i]);
     ui.sw[i].setAttribute("aria-pressed", String(!!A.flags[i]));

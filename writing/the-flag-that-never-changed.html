@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" class="no-js" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>The flag that never changed :: Vyom Gor</title>
+  <meta name="description" content="An ISR sets a flag and main() waits for it. Why my CAN code got away without volatile, and the one-line loop where it wouldn't.">
+  <link rel="canonical" href="https://vgor15.github.io/writing/the-flag-that-never-changed">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Vyom Gor">
+  <meta property="og:title" content="The flag that never changed :: Vyom Gor">
+  <meta property="og:description" content="An ISR sets a flag and main() waits for it. Why my CAN code got away without volatile, and the one-line loop where it wouldn't.">
+  <meta property="og:url" content="https://vgor15.github.io/writing/the-flag-that-never-changed">
+  <meta property="og:image" content="https://vgor15.github.io/assets/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://vgor15.github.io/assets/img/og.png">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://app.cal.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.cal.com; font-src 'self'; connect-src 'self' https://*.cal.com; frame-src 'self' https://cal.com https://*.cal.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <script src="/assets/js/theme-boot.js"></script>
+</head>
+<body data-page="post">
+  <main id="main" class="page">
+    <article class="post">
+      <div class="post__meta"><a class="tag" href="/writing">← Writing</a><span class="tag">N°03</span><span class="tag">Embedded</span><span class="label">Nov 21 2026 · 4 min</span></div>
+      <h1>The flag that never changed</h1>
+      <p class="lede" data-rv>An interrupt sets a flag. The main loop waits for it. Everything works, until you turn the optimiser up and the loop waits forever. This is the story of <code>volatile</code>, told with my own CAN dashboard code.</p>
+
+      <h2 data-rv>The pattern</h2>
+      <p data-rv>On Node A, a Timer1 interrupt sets a flag and the main loop sends a CAN frame when it sees it. This is the real code:</p>
+<pre class="code" data-rv><span class="c">/* Timer_Intr.c */</span>
+u32 timer1 = <span class="n">0</span>;
+
+<span class="k">void</span> timer1_Handler(<span class="k">void</span>) __irq
+{
+    timer1 = <span class="n">1</span>;
+    T1IR = <span class="n">1</span>;
+    VICVectAddr = <span class="n">0</span>;
+}
+
+<span class="c">/* Main_A.c */</span>
+<span class="k">while</span> (<span class="n">1</span>) {
+    result = adc_read(<span class="n">2</span>);
+    ...
+    <span class="k">if</span> (timer1 == <span class="n">1</span>) {
+        timer1 = <span class="n">0</span>;
+        can2_tx(v1);
+    }
+}</pre>
+      <p data-rv>Notice that <code>timer1</code> is a plain <code>u32</code>, not <code>volatile</code>. It worked on the board anyway. Why?</p>
+
+      <h2 data-rv>Why it got away with it</h2>
+      <p data-rv>The compiler is allowed to keep a variable in a register as long as it can prove nothing else changes it. But the loop calls <code>adc_read()</code>, <code>uart0_tx_string()</code> and friends, all defined in other files. The compiler can't see inside them, so it has to assume any of them might write to a global like <code>timer1</code>. After every call it reloads the value from memory, and the ISR's write gets seen. Luck disguised as correctness.</p>
+
+      <h2 data-rv>Where it breaks</h2>
+      <p data-rv>Write the same wait without any function calls and the excuse disappears:</p>
+<pre class="code" data-rv><span class="k">while</span> (timer1 == <span class="n">0</span>);      <span class="c">/* wait for the next tick */</span></pre>
+      <p data-rv>Nothing in that loop can change <code>timer1</code> as far as the compiler knows, because interrupts are invisible to it. With optimisation on, it may load the value once and spin forever on a stale register. The ISR fires, memory changes, and the loop never looks.</p>
+
+      <h2 data-rv>The fix is one word</h2>
+<pre class="code" data-rv><span class="k">volatile</span> u32 timer1 = <span class="n">0</span>;</pre>
+      <p data-rv><code>volatile</code> tells the compiler that every read must actually go to memory, because something it can't see might change it. This is also why my switch loop, <code>while(sw1 == 0);</code>, was always safe: <code>sw1</code> reads <code>IOPIN0</code>, and the LPC21xx header already declares every peripheral register as a <code>volatile</code> pointer to a fixed address.</p>
+
+      <h2 data-rv>What volatile doesn't do</h2>
+      <ul data-rv>
+        <li><b>It doesn't make things atomic.</b> <code>flag ^= 1</code> in main() is a read, modify and write. If the ISR writes in between, one update is lost. Let only one side write a flag, or briefly disable the interrupt around the update.</li>
+        <li><b>It isn't a lock.</b> For anything bigger than one word, copy it out with interrupts disabled.</li>
+      </ul>
+      <p class="post__note" data-rv><b>Rule I follow now:</b> anything shared between an ISR and main() is <code>volatile</code>, and every shared variable has exactly one writer.</p>
+
+      <div class="post__end">
+        <a class="btn btn--ink" href="/lab/can-bus">Try the CAN Bus Lab</a>
+        <a class="btn" href="/writing/pointers-at-the-lab-bench">Next: Pointers at the lab bench →</a>
+      </div>
+    </article>
+  </main>
+  <script src="/assets/vendor/gsap.min.js"></script>
+  <script src="/assets/vendor/SplitText.min.js"></script>
+  <script src="/assets/vendor/lenis.min.js"></script>
+  <script src="/assets/js/data.js"></script>
+  <script src="/assets/js/core.js"></script>
+  <script src="/assets/js/post.js"></script>
+</body>
+</html>

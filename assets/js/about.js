@@ -79,6 +79,48 @@ document.addEventListener("vg:ready", () => {
   qs(".js-x", awards).addEventListener("click", closeOverlay);
   qs(".js-awards").addEventListener("click", () => openOverlay(awards));
 
+  /* ---------- journey map ---------- */
+  const jsvg = qs(".js-journey");
+  if (jsvg) {
+    const W = 760, H = 360, L0 = 66, L1 = 82, A0 = 10, A1 = 26;
+    const px = (lon) => 40 + ((lon - L0) / (L1 - L0)) * (W - 80);
+    const py = (lat) => 20 + ((A1 - lat) / (A1 - A0)) * (H - 50);
+    let g = "";
+    for (let lon = L0; lon <= L1; lon += 2) g += `<line class="jx-grid" x1="${px(lon)}" y1="20" x2="${px(lon)}" y2="${H - 30}"/><text class="jx-tick" x="${px(lon)}" y="${H - 14}" text-anchor="middle">${lon}°E</text>`;
+    for (let lat = A0; lat <= A1; lat += 2) g += `<line class="jx-grid" x1="40" y1="${py(lat)}" x2="${W - 40}" y2="${py(lat)}"/><text class="jx-tick" x="30" y="${py(lat) + 3}" text-anchor="end">${lat}°N</text>`;
+    const P = S.places.map((p) => ({ ...p, x: px(p.lon), y: py(p.lat) }));
+    const [a, b, c] = P;
+    const d = `M${a.x},${a.y} Q${(a.x + b.x) / 2},${a.y - 70} ${b.x},${b.y} Q${b.x + 170},${(b.y + c.y) / 2 - 30} ${c.x},${c.y}`;
+    const labels = P.map((p, i) => {
+      const right = i === 1;
+      const lx = right ? p.x + 16 : p.x - 16, anchor = right ? "start" : "end";
+      const ly = i === 0 ? p.y - 40 : i === 1 ? p.y + 30 : p.y - 26;
+      return `<g class="jx-pt" data-i="${i}">
+        ${i === 2 ? `<circle class="jx-pulse" cx="${p.x}" cy="${p.y}" r="9"/>` : ""}
+        <circle class="jx-dot${i === 2 ? " jx-dot--now" : ""}" cx="${p.x}" cy="${p.y}" r="6"/>
+        <text class="jx-name" x="${lx}" y="${ly}" text-anchor="${anchor}">${p.name}</text>
+        <text class="jx-meta" x="${lx}" y="${ly + 15}" text-anchor="${anchor}">${p.years} · ${p.what}</text>
+      </g>`;
+    }).join("");
+    jsvg.innerHTML = `${g}<path class="jx-route" d="${d}"/>${labels}<circle class="jx-car" r="4.5" cx="${a.x}" cy="${a.y}"/>`;
+    const route = qs(".jx-route", jsvg), car = qs(".jx-car", jsvg), pts = qsa(".jx-pt", jsvg);
+    const len = route.getTotalLength();
+    const play = () => {
+      if (REDUCED) { car.setAttribute("cx", c.x); car.setAttribute("cy", c.y); return; }
+      gsap.set(route, { strokeDasharray: len, strokeDashoffset: len });
+      gsap.set(pts, { opacity: 0, y: 8 });
+      const st = { t: 0 };
+      const tl = gsap.timeline();
+      tl.to(pts[0], { opacity: 1, y: 0, duration: 0.5 })
+        .to(route, { strokeDashoffset: 0, duration: 2.4, ease: "power2.inOut" }, 0.2)
+        .to(st, { t: 1, duration: 2.4, ease: "power2.inOut", onUpdate: () => { const q = route.getPointAtLength(st.t * len); car.setAttribute("cx", q.x); car.setAttribute("cy", q.y); } }, 0.2)
+        .to(pts[1], { opacity: 1, y: 0, duration: 0.5 }, 1.0)
+        .to(pts[2], { opacity: 1, y: 0, duration: 0.5 }, 2.4);
+    };
+    const io = new IntersectionObserver((e) => { if (e[0].isIntersecting) { io.disconnect(); play(); } }, { threshold: 0.35 });
+    io.observe(jsvg);
+  }
+
   /* ---------- telemetry values ---------- */
   qs(".js-pos").textContent = S.pos;
   qs(".js-repos").textContent = `${S.github.repos} PUBLIC`;

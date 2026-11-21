@@ -119,7 +119,7 @@ document.addEventListener("vg:ready", () => {
       el.style.pointerEvents = Math.abs(d) < 0.3 ? "auto" : "none";
     }
     const cur = mod(Math.round(st.p), N);
-    if (cur !== lastCur) { lastCur = cur; root.setAttribute("aria-label", `Selected work, ${items[cur].title}, ${cur + 1} of ${N}`); }
+    if (cur !== lastCur) { if (lastCur !== -1) window.V.sfx("tick"); lastCur = cur; root.setAttribute("aria-label", `Selected work, ${items[cur].title}, ${cur + 1} of ${N}`); }
   };
 
   gsap.ticker.add(() => {

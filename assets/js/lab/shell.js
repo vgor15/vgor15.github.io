@@ -178,6 +178,7 @@
       if (state.busy) { e.preventDefault(); return; }
       if (e.key === "Enter") {
         e.preventDefault();
+        window.V && window.V.sfx && window.V.sfx("key");
         const cmd = input.value;
         freeze(cmd);
         if (cmd.trim()) { state.hist.push(cmd); state.hi = state.hist.length; }
