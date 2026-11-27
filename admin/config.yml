@@ -384,3 +384,44 @@ singletons:
           - { name: when, label: When / context }
           - { name: link, label: Link text, required: false, hint: "Shown as text, e.g. github.com/vgor15/imperfect_cell" }
           - { name: points, label: Points, widget: list, field: { name: point, label: Point, widget: text } }
+
+  - name: seo
+    label: SEO (search results)
+    icon: travel_explore
+    file: content/seo.json
+    fields:
+      - { name: siteName, label: Site name }
+      - { name: locale, label: Locale, hint: "en_IN" }
+      - { name: image, label: Share image, widget: image, hint: "1200 × 630 PNG shown when a link is shared." }
+      - { name: imageAlt, label: Share image description }
+      - name: googleVerification
+        label: Google Search Console code
+        required: false
+        hint: 'Only the content="…" value of the HTML tag Google gives you (not the whole tag).'
+        pattern: ['^[A-Za-z0-9_-]*$', "Paste only the code, without quotes or the <meta> tag."]
+      - name: bingVerification
+        label: Bing Webmaster code
+        required: false
+        hint: 'Only the content="…" value of the msvalidate.01 tag.'
+        pattern: ['^[A-Za-z0-9]*$', "Paste only the code."]
+      - name: pages
+        label: Page titles and descriptions
+        widget: list
+        map_key_field: route
+        collapsed: true
+        summary: "{{route}}"
+        hint: "Pages not listed use the title and description written in their HTML."
+        fields:
+          - name: route
+            label: Page
+            hint: 'The page path, e.g. "/about" or "/lab/can-bus".'
+            pattern: ['^/[a-z0-9/-]*$', "Starts with / and uses lowercase letters, numbers, - and /."]
+          - name: title
+            label: Title
+            hint: "Shown as the blue link in Google. Keep it under 60 characters."
+            pattern: ['^.{5,65}$', "Between 5 and 65 characters."]
+          - name: description
+            label: Description
+            widget: text
+            hint: "The grey text under the link. Aim for 120 to 155 characters."
+            pattern: ['^[\s\S]{50,170}$', "Between 50 and 170 characters."]

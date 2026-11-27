@@ -112,14 +112,16 @@ input, textarea { font: inherit; color: inherit; }
 .skip:focus { top: 12px; }
 
 /* ---------- paper texture ---------- */
-.paper-fx { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+/* A plain alpha layer: no blend mode, so scrolling never has to re-mix the whole screen. */
+.paper-fx { position: fixed; inset: 0; pointer-events: none; z-index: 0; contain: strict; }
 .paper-fx::before {
-  content: ""; position: absolute; inset: -50%;
+  content: ""; position: absolute; inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.11 0 0 0 0 0.1 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity: var(--grain-opacity);
-  mix-blend-mode: multiply;
 }
-[data-theme="dark"] .paper-fx::before { mix-blend-mode: screen; }
+[data-theme="dark"] .paper-fx::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.93 0 0 0 0 0.92 0 0 0 0 0.89 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
 .paper-fx::after {
   content: ""; position: absolute; inset: 0;
   background:
@@ -944,3 +946,28 @@ button.hud__chip:hover b { color: var(--gold-text); }
 .slots canvas { width: 100%; height: auto; aspect-ratio: 5 / 8; }
 .lcd { max-width: 100%; }
 .lcd canvas { max-width: 100%; }
+
+/* ============================================================
+   Page transitions: native cross-document View Transitions where
+   supported, so a click navigates at once; core.js keeps a short
+   veil only for older browsers. HUD and header stay put.
+   ============================================================ */
+@view-transition { navigation: auto; }
+.hud { view-transition-name: hud; }
+.hdr { view-transition-name: hdr; }
+::view-transition-old(root) { animation: vt-out 0.2s cubic-bezier(0.4, 0, 1, 1) both; }
+::view-transition-new(root) { animation: vt-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes vt-out { to { opacity: 0; transform: translateY(-10px); } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(16px); } }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}
+
+/* Crawler-readable copy of each page's content, added by the build (scripts/seo.mjs).
+   Shown only when JavaScript is off; theme-boot.js removes .no-js before first paint. */
+html:not(.no-js) .prerender { display: none !important; }
+.prerender { position: relative; z-index: 3; max-width: 760px; margin: 0 auto; padding: 120px var(--gutter) 64px; display: grid; gap: 14px; font-size: 16px; line-height: 1.6; }
+.prerender h2 { font-size: 28px; letter-spacing: -0.03em; line-height: 1.1; margin-top: 18px; }
+.prerender h3, .prerender h4 { font-size: 18px; letter-spacing: -0.015em; margin-top: 10px; }
+.prerender ul { padding-left: 20px; display: grid; gap: 6px; }
+.prerender a { text-decoration: underline; text-underline-offset: 3px; }

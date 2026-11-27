@@ -49,6 +49,7 @@ All content lives in [`content/`](content/) as JSON files; the pages read them a
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): how the site is put together
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md): how it goes live, and how to roll back
 - [docs/TESTING.md](docs/TESTING.md): the automatic checks on every change
+- [docs/SEO.md](docs/SEO.md): search, sharing and the one-time Google and Bing steps
 - [SECURITY.md](SECURITY.md) and [PRIVACY.md](PRIVACY.md)
 
 ## Run locally

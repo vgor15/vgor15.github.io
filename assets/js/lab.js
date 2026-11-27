@@ -189,12 +189,17 @@ document.addEventListener("vg:ready", () => {
     else if (e.key === "Enter") navigate(href(items[mod(Math.round(st.p), N)]));
   });
 
+  // Draw only while the rows move; resize and mode changes draw on their own.
+  let lastP = NaN;
   gsap.ticker.add(() => {
-    if (mode === "grid") return;
+    if (mode === "grid") { lastP = NaN; return; }
     st.p += (st.target - st.p) * (REDUCED ? 1 : 0.12);
     if (Math.abs(st.target - st.p) < 0.0005) st.p = st.target;
+    if (st.p === lastP) return;
+    lastP = st.p;
     renderRows();
   });
+  addEventListener("resize", () => (lastP = NaN));
 
   setMode(mode);
 });

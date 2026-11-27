@@ -127,11 +127,16 @@ document.addEventListener("vg:ready", () => {
     if (cur !== lastCur) { if (lastCur !== -1) window.V.sfx("tick"); lastCur = cur; root.setAttribute("aria-label", `Selected work, ${items[cur].title}, ${cur + 1} of ${N}`); }
   };
 
+  // Draw only while the wheel moves (plus one settling frame); an idle wheel costs nothing.
+  let needsDraw = true;
+  addEventListener("resize", () => (needsDraw = true));
   gsap.ticker.add(() => {
     const prev = st.p;
     st.p += (st.target - st.p) * (REDUCED ? 1 : 0.11);
     if (Math.abs(st.target - st.p) < 0.0005) st.p = st.target;
     st.vel = st.p - prev;
+    if (st.vel === 0 && !needsDraw) return;
+    needsDraw = st.vel !== 0;
     render();
   });
 

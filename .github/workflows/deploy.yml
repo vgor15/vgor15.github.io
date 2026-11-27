@@ -53,3 +53,21 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+
+  indexnow:
+    name: Tell search engines about the update (IndexNow)
+    needs: deploy
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Submit the sitemap URLs to Bing, Yandex, Seznam and Naver
+        run: |
+          set -euo pipefail
+          sleep 30 # let GitHub Pages finish serving the new version
+          key=4263b288c0d80406a6bed926c7695b75
+          urls=$(curl -sf --max-time 20 https://vgor15.github.io/sitemap.xml | grep -o '<loc>[^<]*' | sed 's/<loc>//' | jq -R . | jq -s .)
+          body=$(jq -n --arg k "$key" --argjson u "$urls" '{host:"vgor15.github.io", key:$k, keyLocation:("https://vgor15.github.io/" + $k + ".txt"), urlList:$u}')
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -X POST https://api.indexnow.org/indexnow -H 'Content-Type: application/json; charset=utf-8' -d "$body")
+          echo "IndexNow answered HTTP $code for $(echo "$urls" | jq length) URLs"
+          case "$code" in 200|202) ;; *) echo "::warning::IndexNow answered HTTP $code";; esac
