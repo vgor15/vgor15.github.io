@@ -60,7 +60,7 @@
         <span class="hud__chip">${S.tzLabel}::<b class="js-clock">--:--</b></span>
         <span class="hud__chip">FPS::<b class="js-fps">--</b></span>
         <span class="hud__chip">LCP::<b class="js-lcp">--</b></span>
-        <span class="hud__chip">VYOM::<b class="js-here">--</b></span>
+        <span class="hud__chip">BLR::<b class="js-here">--</b></span>
         <span class="hud__chip"><i class="live blink"></i>BUS::<b>0x500</b></span>
         <span class="hud__chip">STATUS::<b>${S.status}</b></span>
         <button class="hud__chip js-snd" type="button" aria-pressed="false" aria-label="Toggle sound">SND::<b>OFF</b></button>
@@ -114,8 +114,8 @@
       qsa(".js-clock").forEach((e) => (e.textContent = t));
       const parts = Object.fromEntries(partFmt.formatToParts(now).map((p) => [p.type, p.value]));
       const hr = (parseInt(parts.hour, 10) % 24) + parseInt(parts.minute, 10) / 60;
-      const atBench = S.schedule.days.includes(days[parts.weekday]) && hr >= S.schedule.from && hr < S.schedule.to;
-      qsa(".js-here").forEach((e) => (e.textContent = atBench ? "AT BENCH" : "OFF BENCH"));
+      const day = hr >= 6 && hr < 18.5;
+      qsa(".js-here").forEach((e) => (e.textContent = day ? "DAYTIME" : "NIGHT"));
     };
     tick();
     setInterval(tick, 1000);

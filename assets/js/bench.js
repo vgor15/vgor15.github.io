@@ -8,7 +8,7 @@ document.addEventListener("vg:ready", () => {
 
   /* ---------- badge content ---------- */
   qs(".badge__top").innerHTML = `<span>${B.badge.kind}</span><span>${B.badge.year}</span>`;
-  qs(".badge__icon").innerHTML = window.ART.icons.can;
+  qs(".badge__icon").innerHTML = S.photo ? `<img src="${S.photo}" alt="${S.name}" width="92" height="92" decoding="async">` : window.ART.icons.can;
   qs(".badge__name").textContent = S.name;
   qs(".badge__role").textContent = B.badge.role;
   qs(".badge__bot").innerHTML = `<span>${B.badge.org}</span><span>${B.badge.loc}</span>`;

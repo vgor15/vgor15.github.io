@@ -16,15 +16,13 @@ const SITE = {
   tzLabel: "IST",
   pos: "N 12°58′19″ / E 77°35′40″",
   status: "BUILDING @ VVDN",
-  // Local schedule used by the HUD's "VYOM::" chip (IST, Mon–Sat)
-  schedule: { days: [1, 2, 3, 4, 5, 6], from: 9.5, to: 18.5 },
   github: { user: "vgor15", contributions: 54, repos: 19 },
 
   // Email is assembled only when a visitor asks for it (keeps it out of the HTML).
   mail: { u: [118, 121, 111, 109, 103, 111, 114, 49, 53, 48, 51], d: [103, 109, 97, 105, 108, 46, 99, 111, 109] },
   cal: "vyom-gor-1503/15min",
   resume: "/resume", // web CV (print to PDF); phone-free by design
-  photo: "",  // set to "/assets/img/profile.jpg" once the portrait is added
+  photo: "/assets/img/profile.jpg",
 
   socials: [
     { label: "GitHub", url: "https://github.com/vgor15", icon: "github" },
@@ -67,7 +65,7 @@ const SITE = {
       href: "/bench",
       plate: "test",
       icon: "test",
-      summary: "Linux production-test tooling for embedded hardware. Details stay under NDA.",
+      summary: "Linux production-test tooling for embedded hardware. Details stay with the company.",
     },
     {
       title: "CAN Bus Lab",
@@ -115,14 +113,14 @@ const SITE = {
 
   /* ---------- Bench (experience) ---------- */
   bench: {
-    badge: { kind: "BENCH PASS", year: "2026", role: "Embedded Software", org: "CURRENTLY · VVDN", loc: "BLR · IN" },
+    badge: { kind: "BENCH PASS", year: "2026", role: "Embedded Software Engineer · Trainee", org: "CURRENTLY · VVDN", loc: "BLR · IN" },
     experience: [
       {
         when: "Feb 2026 — Present",
         org: "VVDN Technologies",
-        role: "Embedded Software",
+        role: "Embedded Software Engineer (Trainee)",
         where: "Bengaluru",
-        text: "Working with the team behind a Linux production-test suite for an in-vehicle network video recorder.",
+        text: "Trainee on the team behind a Linux production-test suite for an in-vehicle network video recorder, learning by shadowing senior engineers and debugging real issues.",
         points: [
           "C on embedded Linux with POSIX threads and systemd services",
           "I2C GPIO-expander logic for status LEDs, buzzers and buttons",
@@ -222,7 +220,7 @@ const SITE = {
   now: {
     updated: "2026-11-21",
     building: [
-      "Production-test tooling for embedded Linux hardware at VVDN, alongside the team that ships it.",
+      "Shadowing the production-test team at VVDN and debugging real hardware issues on embedded Linux.",
       "This site: the CAN Bus Lab, Glyph Studio and imperfect_cell in the browser.",
     ],
     learning: [

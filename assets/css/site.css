@@ -865,3 +865,4 @@ button.hud__chip:hover b { color: var(--gold); }
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
   [data-rv] { opacity: 1 !important; }
 }
+.badge__icon img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; border-radius: inherit; filter: grayscale(0.15) contrast(1.04); }
