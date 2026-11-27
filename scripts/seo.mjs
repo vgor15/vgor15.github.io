@@ -63,7 +63,8 @@ export function headTags(m, S) {
   const seo = S.seo || {};
   const image = abs(seo.image || "/assets/img/og.png");
   const imageAlt = seo.imageAlt || `${S.name}, ${S.role}`;
-  const x = (S.socials || []).find((s) => /x\.com|twitter\.com/.test(s.url));
+  const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return ""; } };
+  const x = (S.socials || []).find((s) => ["x.com", "twitter.com"].includes(hostOf(s.url)));
   const handle = x ? "@" + x.url.replace(/\/$/, "").split("/").pop() : "";
   const ogType = m.post ? "article" : m.route === "/about" ? "profile" : "website";
   const t = [

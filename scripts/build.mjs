@@ -29,7 +29,8 @@ async function* walk(dir) {
     else yield join(dir, e.name);
   }
 }
-const attr = (html, re) => { const m = re.exec(html); return m ? m[1].replace(/&amp;/g, "&").replace(/&quot;/g, '"') : ""; };
+// Decode the few entities our own HTML uses; &amp; goes last so "&amp;quot;" can't turn into a quote.
+const attr = (html, re) => { const m = re.exec(html); return m ? m[1].replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&") : ""; };
 
 /* Strip the head tags this build owns, then add the generated set right after the viewport meta. */
 function rewriteHead(html, tags) {
