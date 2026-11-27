@@ -1,0 +1,15 @@
+{
+  "updated": "2026-11-21",
+  "building": [
+    "Shadowing the production-test team at VVDN and debugging real hardware issues on embedded Linux.",
+    "This site: the CAN Bus Lab, Glyph Studio and imperfect_cell in the browser."
+  ],
+  "learning": [
+    "Linux system programming in a real codebase: threads, systemd services, I2C from userspace.",
+    "Data structures in C++, one LeetCode problem at a time."
+  ],
+  "next": [
+    "imperfect_cell v2: pipes, redirection and proper signal handling.",
+    "CAN dashboard v2: separate IDs for events, edge-triggered switches, error counters."
+  ]
+}

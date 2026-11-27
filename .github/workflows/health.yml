@@ -1,0 +1,65 @@
+# Uptime and health of the live site, every 6 hours, plus a weekly check of outside links.
+# A failed run makes GitHub email you, so you hear about problems before visitors do.
+name: Health
+
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+    - cron: "5 4 * * 0" # Sunday: also check outside links
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  live:
+    name: Live site is up and clean
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Pages answer with 200
+        run: |
+          set -euo pipefail
+          base="https://vgor15.github.io"
+          for p in / /about /lab /writing /bench /contact /resume /now /notes /changelog /lab/can-bus /admin/ /content/site.json /.well-known/security.txt /robots.txt /sitemap.xml; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 --retry 2 "$base$p")
+            echo "$code $p"
+            [ "$code" = "200" ] || { echo "::error::$p returned $code"; exit 1; }
+          done
+      - name: Content files parse
+        run: |
+          set -euo pipefail
+          for f in site work about bench lab writing changelog now notes resume; do
+            curl -sf --max-time 20 "https://vgor15.github.io/content/$f.json" | jq -e . > /dev/null || { echo "::error::content/$f.json is broken"; exit 1; }
+          done
+      - name: No plain email address in the live HTML
+        run: |
+          set -euo pipefail
+          for p in / /about /contact /resume /bench; do
+            if curl -sf --max-time 20 "https://vgor15.github.io$p" | grep -Eq '[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}'; then
+              echo "::error::an email address is visible in the HTML of $p"; exit 1
+            fi
+          done
+      - name: security.txt has not expired
+        run: |
+          set -euo pipefail
+          exp=$(curl -sf --max-time 20 https://vgor15.github.io/.well-known/security.txt | sed -n 's/^Expires: //p')
+          left=$(( ( $(date -d "$exp" +%s) - $(date +%s) ) / 86400 ))
+          echo "security.txt expires in $left days"
+          [ "$left" -gt 30 ] || { echo "::error::security.txt expires in $left days: update the Expires line"; exit 1; }
+
+  outside-links:
+    name: Outside links still work
+    if: github.event.schedule == '5 4 * * 0' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2
+        with:
+          # LinkedIn, X and cal.com block bots, so they are skipped rather than reported as broken.
+          args: --no-progress --max-retries 2 --exclude 'linkedin\.com' --exclude '(^|\.)x\.com' --exclude 'cal\.com' --exclude 'localhost' 'content/*.json' '*.html' 'lab/*.html' 'writing/*.html'
+          fail: true

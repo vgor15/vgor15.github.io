@@ -1,0 +1,24 @@
+{
+  "route": "KUTCH → BENGALURU",
+  "journey": [
+    { "place": "KUTCH", "years": "2018–21", "note": "Diploma" },
+    { "place": "AHMEDABAD", "years": "2022–25", "note": "B.Tech" },
+    { "place": "BENGALURU", "years": "2025–", "note": "Building" }
+  ],
+  "letter": [
+    "Hey, you found my file.",
+    "I'm Vyom, an embedded software engineer who likes software best when it makes an LED blink, a relay click or a frame land on a bus. I write C and C++ close to the hardware: registers, interrupts, drivers, and the Linux plumbing that ties a device together.",
+    "Days, I'm at VVDN Technologies in Bengaluru, working with the team that builds production-test software for embedded Linux hardware. Before that I spent six months at Vector India going deep on Embedded C, RTOS and Linux system programming, and built a two-node CAN dashboard on ARM7.",
+    "Studied in Kutch and Ahmedabad (B.Tech, 9.08 CGPA), now building in Bengaluru. Off the bench: anime, games, swimming, hiking, and the next good food spot."
+  ],
+  "awards": [
+    { "title": "MYSY Scholarship", "note": "Academic excellence, B.Tech" },
+    { "title": "9.08 / 10 CGPA", "note": "B.Tech Computer Engineering" },
+    { "title": "Embedded Systems Certification", "note": "Vector India · 2025" }
+  ],
+  "places": [
+    { "name": "Kutch", "lat": 23.24, "lon": 69.67, "years": "2018–21", "what": "Diploma" },
+    { "name": "Ahmedabad", "lat": 23.02, "lon": 72.57, "years": "2022–25", "what": "B.Tech · 9.08" },
+    { "name": "Bengaluru", "lat": 12.97, "lon": 77.59, "years": "2025–", "what": "Vector India → VVDN" }
+  ]
+}

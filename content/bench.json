@@ -1,0 +1,50 @@
+{
+  "badge": { "kind": "BENCH PASS", "year": "2026", "role": "@title", "org": "CURRENTLY · VVDN", "loc": "BLR · IN" },
+  "experience": [
+    {
+      "when": "Feb 2026 — Present",
+      "org": "VVDN Technologies",
+      "role": "@title",
+      "where": "Bengaluru",
+      "text": "Trainee on the team behind a Linux production-test suite for an in-vehicle network video recorder, learning by shadowing senior engineers and debugging real issues.",
+      "points": [
+        "C on embedded Linux with POSIX threads and systemd services",
+        "I2C GPIO-expander logic for status LEDs, buzzers and buttons",
+        "Storage (NVMe / SATA) detection and data-integrity debugging",
+        "NIC and Ethernet-switch MAC provisioning on the test line"
+      ]
+    },
+    {
+      "when": "Jan 2026 — Feb 2026",
+      "org": "Vector India",
+      "role": "LC Lab Coordinator",
+      "where": "Bengaluru",
+      "text": "Ran lab sessions in C, Embedded C, data structures and Linux programming.",
+      "points": ["Debugged student programs around pointers, memory and process execution"]
+    },
+    {
+      "when": "May 2025 — Nov 2025",
+      "org": "Vector India",
+      "role": "Embedded Systems Certification",
+      "where": "Bengaluru",
+      "text": "Six months of C, C++, Embedded C, RTOS and Linux system programming with hands-on labs.",
+      "points": ["Built the two-node CAN dashboard on LPC2129 (team of 3)"]
+    }
+  ],
+  "education": [
+    { "when": "2022 — 2025", "title": "B.Tech, Computer Engineering", "where": "Silver Oak University, Ahmedabad", "note": "CGPA 9.08 / 10 · MYSY Scholarship" },
+    { "when": "2018 — 2021", "title": "Diploma, Computer Engineering", "where": "Government Polytechnic, Kutch", "note": "CGPA 7.62 / 10" }
+  ],
+  "skills": [
+    { "group": "Embedded", "items": ["ARM7 · LPC2129", "CAN 2.0B", "I2C", "SPI", "UART", "GPIO & interrupts", "RTOS basics"] },
+    { "group": "Linux & systems", "items": ["C", "C++", "POSIX threads", "fork / exec / wait", "TCP sockets", "systemd", "Bash", "Make"] },
+    { "group": "Tools", "items": ["Keil µVision", "Flash Magic", "GCC", "GDB", "Git", "Python"] }
+  ],
+  "hobbies": ["Anime", "Video games", "Swimming", "Hiking", "Food spots"],
+  "certificates": [
+    { "title": "Embedded Systems Certification", "org": "Vector India", "when": "May – Nov 2025", "note": "C, C++, Embedded C, RTOS, Linux system programming, hands-on labs", "file": "" },
+    { "title": "MYSY Scholarship", "org": "Government of Gujarat", "when": "B.Tech · 2022–25", "note": "Mukhyamantri Yuva Swavalamban Yojana, for academic excellence", "file": "" },
+    { "title": "B.Tech, Computer Engineering", "org": "Silver Oak University", "when": "2025", "note": "Graduated with a CGPA of 9.08 / 10", "file": "" }
+  ],
+  "testimonials": []
+}

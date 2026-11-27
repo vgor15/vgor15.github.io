@@ -1,0 +1,24 @@
+{
+  "name": "vgor15.github.io",
+  "private": true,
+  "description": "Vyom Gor's portfolio. Static site; these packages are only used by the tests in CI.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "serve": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check.mjs",
+    "check:site": "node scripts/build.mjs && node scripts/check.mjs _site",
+    "test": "playwright test",
+    "test:update": "playwright test --update-snapshots",
+    "validate:html": "html-validate \"*.html\" \"lab/*.html\" \"writing/*.html\" \"admin/*.html\"",
+    "lighthouse": "lhci autorun"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.1",
+    "@lhci/cli": "0.16.1",
+    "@playwright/test": "1.65.1",
+    "html-validate": "11.23.0"
+  }
+}

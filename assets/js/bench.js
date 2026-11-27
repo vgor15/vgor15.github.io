@@ -5,6 +5,7 @@ document.addEventListener("vg:ready", () => {
   const { qs, qsa, S, useLenis, reveals, REDUCED } = window.V;
   useLenis();
   const B = S.bench;
+  const NOHOVER = matchMedia("(hover: none)").matches;
 
   /* ---------- badge content ---------- */
   qs(".badge__top").innerHTML = `<span>${B.badge.kind}</span><span>${B.badge.year}</span>`;
@@ -50,7 +51,7 @@ document.addEventListener("vg:ready", () => {
   ];
   const dsEl = qs(".js-ds");
   const pinSvg = () => {
-    let s = `<svg viewBox="0 0 360 300" role="img" aria-label="DIP-16 chip with skills as pins">
+    let s = `<svg viewBox="0 0 360 300" role="group" aria-label="DIP-16 chip with skills as pins">
       <rect x="110" y="20" width="140" height="260" rx="8" fill="var(--ink)"/>
       <path d="M165 20a15 15 0 0 0 30 0" fill="var(--surface)"/>
       <circle cx="128" cy="40" r="5" fill="var(--surface)" opacity=".5"/>
@@ -60,6 +61,7 @@ document.addEventListener("vg:ready", () => {
       const y = 38 + k * 30;
       const x = left ? 82 : 250;
       s += `<g class="pin" data-pin="${i}" tabindex="0" role="button" aria-label="Pin ${i + 1}: ${name}">
+        <rect class="pin__hit" x="${left ? 0 : 250}" y="${y - 9}" width="110" height="30" fill="transparent"/>
         <rect x="${x}" y="${y}" width="28" height="12" rx="2"/>
         <text class="pn" x="${left ? 128 : 232}" y="${y + 10}" text-anchor="middle" fill="var(--paper)">${i + 1}</text>
         <text x="${left ? 74 : 286}" y="${y + 10}" text-anchor="${left ? "end" : "start"}">${name}</text>
@@ -70,7 +72,7 @@ document.addEventListener("vg:ready", () => {
   dsEl.innerHTML = `
     <div class="ds__top">
       <div class="ds__pn">PART NO.<b>VG-2026E</b>Embedded software engineer · rev 2026.11</div>
-      <p class="ds__desc">General-purpose embedded engineer in a one-person package. C/C++ core, ARM7 peripherals, CAN and serial buses, Linux userspace. Hover a pin to see where it was used.</p>
+      <p class="ds__desc">General-purpose embedded engineer in a one-person package. C/C++ core, ARM7 peripherals, CAN and serial buses, Linux userspace. ${NOHOVER ? "Tap" : "Hover"} a pin to see where it was used.</p>
     </div>
     <div class="ds__body">
       <div class="ds__chip">${pinSvg()}</div>
@@ -89,6 +91,13 @@ document.addEventListener("vg:ready", () => {
     el.addEventListener("mouseleave", () => hi(el.dataset.pin, false));
     el.addEventListener("focus", () => hi(el.dataset.pin, true));
     el.addEventListener("blur", () => hi(el.dataset.pin, false));
+    // Touch screens have no hover: a tap highlights the pin until the next tap.
+    el.addEventListener("click", () => {
+      if (!NOHOVER) return;
+      const was = el.classList.contains("is-on");
+      qsa("[data-pin].is-on", dsEl).forEach((x) => x.classList.remove("is-on"));
+      if (!was) hi(el.dataset.pin, true);
+    });
   });
 
   /* ---------- certificates ---------- */
@@ -100,7 +109,7 @@ document.addEventListener("vg:ready", () => {
       <h3 class="cert__t">${c.title}</h3>
       <span class="cert__o">${c.org}</span>
       <p class="cert__n">${c.note}</p>
-      <div class="cert__f"><span>${c.when}</span><span>${c.file ? `<a href="${c.file}" target="_blank" rel="noopener">View original ↗</a>` : "Original on request"}</span></div>
+      <div class="cert__f"><span>${c.when}</span><span>${c.file ? `<a href="${c.file}" target="_blank" rel="noopener noreferrer">View original ↗</a>` : "Original on request"}</span></div>
     </article>`).join("");
 
   /* ---------- testimonials (hidden until real quotes exist) ---------- */

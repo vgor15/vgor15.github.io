@@ -1,0 +1,384 @@
+# ------------------------------------------------------------------
+# Admin panel (Sveltia CMS) for vgor15.github.io
+# Open https://vgor15.github.io/admin/ and "Sign In with Token".
+# Every save is a commit to main; the live site updates in about a minute.
+# Docs: https://sveltiacms.app/docs   ·   How-to for this site: docs/EDITING.md
+# ------------------------------------------------------------------
+
+backend:
+  name: github
+  repo: vgor15/vgor15.github.io
+  branch: main
+  commit_messages:
+    create: "content: add {{collection}} {{slug}}"
+    update: "content: update {{collection}} {{slug}}"
+    delete: "content: remove {{collection}} {{slug}}"
+    uploadMedia: "content: upload {{path}}"
+    deleteMedia: "content: delete {{path}}"
+
+site_url: https://vgor15.github.io
+display_url: https://vgor15.github.io
+
+media_folder: assets/uploads
+public_folder: /assets/uploads
+
+media_libraries:
+  default:
+    config:
+      max_file_size: 5000000 # 5 MB before conversion
+      slugify_filename: true
+  all:
+    transformations:
+      # Photos become WebP, max 2048 px, and lose their Exif data (GPS, camera, time).
+      raster_image:
+        format: webp
+        quality: 85
+        width: 2048
+        height: 2048
+      svg:
+        optimize: true
+
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: "-"
+
+# ------------------------------------------------------------------
+# Lists: each file is one JSON array; drag entries to reorder them.
+# ------------------------------------------------------------------
+collections:
+  - name: work
+    label: Projects
+    label_singular: Project
+    description: The cards on the home wheels. The first entry shows first. Drag to reorder.
+    file: content/work.json
+    identifier_field: title
+    summary: "{{title}} · {{year}}"
+    fields:
+      - { name: title, label: Title }
+      - name: slug
+        label: Short ID
+        hint: "lowercase-with-dashes, unique. Used for the project's page later."
+        unique: true
+        pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', "Use lowercase letters, numbers and single dashes."]
+      - { name: by, label: Chip, hint: 'Small tag under the title, e.g. "w/vvdn" or "w/linux".' }
+      - name: year
+        label: Year
+        pattern: ['^[0-9]{4}$', "Four digits, e.g. 2026."]
+      - { name: summary, label: Summary, widget: text, hint: "One sentence." }
+      - name: href
+        label: Link
+        required: false
+        hint: "A repo (https://github.com/…) or a page on this site (/lab/can-bus). Leave empty if there is nothing to open."
+        pattern: ['^(https://|/|$)', "Start with https:// or / (a page on this site)."]
+      - name: img
+        label: Cover image
+        widget: image
+        required: false
+        hint: "Optional. Replaces the drawn plate. Photos are converted to WebP and their location data is stripped on upload."
+      - name: plate
+        label: Drawn plate
+        widget: select
+        default: grid
+        hint: "Used when there is no cover image."
+        options:
+          - { label: "CAN boards", value: canIllo }
+          - { label: "LCD dashboard", value: lcdPlate }
+          - { label: "Terminal", value: terminal }
+          - { label: "Test rig", value: test }
+          - { label: "Tree", value: tree }
+          - { label: "Grid", value: grid }
+          - { label: "LCD glyphs", value: lcd }
+          - { label: "Shell", value: shell }
+      - name: icon
+        label: Small tile icon
+        widget: select
+        default: chip
+        options:
+          - { label: "CAN", value: can }
+          - { label: "Cell", value: cell }
+          - { label: "Test", value: test }
+          - { label: "LCD", value: lcd }
+          - { label: "Tree", value: tree }
+          - { label: "Grid", value: grid }
+          - { label: "Chip", value: chip }
+          - { label: "VG monogram", value: vg }
+      - { name: hidden, label: Hide from the site, widget: boolean, default: false, required: false }
+
+  - name: writing
+    label: Posts
+    label_singular: Post
+    description: "The Writing list. Each post's text lives in writing/<id>.html for now; writing new posts here comes in the next update."
+    file: content/writing.json
+    identifier_field: title
+    summary: "{{title}} · {{date}}"
+    create: false
+    delete: false
+    fields:
+      - { name: title, label: Title }
+      - { name: slug, label: Page ID, readonly: true, hint: "The page is /writing/<id>." }
+      - name: tag
+        label: Tag
+        widget: select
+        options: [EMBEDDED, LINUX, C, CPP, CAN, ARM7, NOTES]
+      - { name: date, label: Published, widget: datetime, type: date, format: YYYY-MM-DD }
+      - { name: minutes, label: Reading time (minutes), widget: number, value_type: int, min: 1, max: 60 }
+      - { name: excerpt, label: Excerpt, widget: text, hint: "One or two sentences for the list." }
+      - { name: draft, label: Draft (hidden), widget: boolean, default: false, required: false }
+
+  - name: lab
+    label: Lab experiments
+    label_singular: Experiment
+    description: Text for the Lab cards. New experiments need code, so only edit what is here.
+    file: content/lab.json
+    identifier_field: title
+    create: false
+    delete: false
+    fields:
+      - { name: title, label: Title }
+      - { name: slug, label: Page ID, readonly: true }
+      - { name: tags, label: Tags, widget: list, field: { name: tag, label: Tag } }
+      - { name: isNew, label: Show NEW tag, widget: boolean, default: false, required: false }
+      - { name: desc, label: Description, widget: text }
+
+  - name: notes
+    label: Notes (TIL)
+    label_singular: Note
+    description: Short "today I learned" cards on /notes. Newest first.
+    file: content/notes.json
+    identifier_field: title
+    summary: "{{tag}} · {{title}}"
+    fields:
+      - name: tag
+        label: Tag
+        widget: select
+        options: [C, CPP, ARM7, CAN, HW, LCD, Linux, RTOS, Tools]
+      - { name: title, label: Title }
+      - { name: body, label: Note, widget: text, hint: "Two or three sentences." }
+
+  - name: changelog
+    label: What's new
+    label_singular: Update
+    description: The bell drawer and /changelog. Any order; the site sorts by date.
+    file: content/changelog.json
+    identifier_field: title
+    summary: "{{date}} · {{title}}"
+    fields:
+      - name: type
+        label: Type
+        widget: select
+        options: [Site, Writing, Lab, Work, Code, Milestone]
+      - { name: date, label: Date, widget: datetime, type: date, format: YYYY-MM-DD }
+      - { name: label, label: Date label override, required: false, hint: 'Leave empty to show the month, e.g. "NOV".' }
+      - { name: title, label: Title }
+      - { name: desc, label: One line, widget: text }
+      - name: href
+        label: Link
+        hint: "A page on this site (/lab/can-bus) or https://…"
+        pattern: ['^(https://|/)', "Start with https:// or /."]
+
+# ------------------------------------------------------------------
+# Single pages and settings
+# ------------------------------------------------------------------
+singletons:
+  - name: site
+    label: Site settings
+    icon: settings
+    file: content/site.json
+    fields:
+      - { name: name, label: Full name }
+      - { name: first, label: First name }
+      - { name: initials, label: Initials, widget: list, min: 2, max: 2, field: { name: letter, label: Letter } }
+      - { name: role, label: Role (short), hint: "Used in the boot log and the shell." }
+      - name: title
+        label: Job title
+        widget: object
+        hint: "Anywhere the content says @title shows the current title. On the switch date it changes to the next one by itself (India time)."
+        fields:
+          - { name: current, label: Current title }
+          - { name: next, label: Next title }
+          - { name: switchOn, label: Switch on, widget: datetime, type: date, format: YYYY-MM-DD }
+      - { name: tagline, label: Tagline }
+      - { name: status, label: HUD status, hint: 'Top bar chip, e.g. "BUILDING @ VVDN".' }
+      - { name: company, label: Company }
+      - { name: city, label: City }
+      - { name: country, label: Country }
+      - { name: tz, label: Time zone (IANA), hint: "e.g. Asia/Kolkata" }
+      - { name: tzLabel, label: Time zone label, hint: "e.g. IST" }
+      - { name: pos, label: Coordinates text }
+      - name: github
+        label: GitHub numbers
+        widget: object
+        collapsed: true
+        fields:
+          - { name: user, label: Username }
+          - { name: contributions, label: Contributions (last year), widget: number, value_type: int }
+          - { name: repos, label: Public repos, widget: number, value_type: int }
+      - name: emailEncoded
+        label: Email (encoded)
+        hint: "Your email in Base64, so scrapers can't read it from this file. To change it, encode the new address (any Base64 tool) and paste it here."
+        pattern: ['^[A-Za-z0-9+/]+={0,2}$', "Base64 only."]
+      - { name: cal, label: cal.com link, hint: "username/event, e.g. vyom-gor-1503/15min" }
+      - { name: resume, label: Resume page, hint: "Keep /resume." }
+      - { name: photo, label: Photo, widget: image, hint: "Shown on About and Bench. Converted to WebP, location data stripped." }
+      - name: socials
+        label: Social links
+        widget: list
+        collapsed: true
+        summary: "{{label}}"
+        fields:
+          - { name: label, label: Label }
+          - { name: url, label: URL, pattern: ['^https://', "Must start with https://"] }
+          - { name: icon, label: Icon, widget: select, options: [github, linkedin, x] }
+      - name: nav
+        label: Menu
+        widget: list
+        collapsed: true
+        summary: "{{label}} → {{href}}"
+        fields:
+          - { name: label, label: Label }
+          - { name: href, label: Page, pattern: ['^/', "A page on this site, starting with /"] }
+      - name: credit
+        label: Footer credit
+        widget: object
+        collapsed: true
+        fields:
+          - { name: text, label: Text }
+          - { name: url, label: URL }
+      - name: integrations
+        label: Optional services (leave empty = off)
+        widget: object
+        collapsed: true
+        fields:
+          - { name: goatcounter, label: GoatCounter code, required: false, hint: "Privacy-friendly visit counter. Empty = no analytics at all." }
+          - { name: web3formsKey, label: Web3Forms access key, required: false, hint: "Lets the contact letter send without opening an email app. Empty = mailto." }
+
+  - name: about
+    label: About page
+    icon: person
+    file: content/about.json
+    fields:
+      - { name: route, label: Map title, hint: 'e.g. "KUTCH → BENGALURU"' }
+      - name: letter
+        label: Letter paragraphs
+        widget: list
+        field: { name: paragraph, label: Paragraph, widget: text }
+      - name: journey
+        label: Journey stops
+        widget: list
+        summary: "{{place}} · {{years}}"
+        fields:
+          - { name: place, label: Place (caps) }
+          - { name: years, label: Years }
+          - { name: note, label: Note }
+      - name: places
+        label: Map pins
+        widget: list
+        collapsed: true
+        summary: "{{name}}"
+        fields:
+          - { name: name, label: Name }
+          - { name: lat, label: Latitude, widget: number, value_type: float }
+          - { name: lon, label: Longitude, widget: number, value_type: float }
+          - { name: years, label: Years }
+          - { name: what, label: What }
+      - name: awards
+        label: Awards
+        widget: list
+        summary: "{{title}}"
+        fields:
+          - { name: title, label: Title }
+          - { name: note, label: Note }
+
+  - name: bench
+    label: Bench (experience)
+    icon: work
+    file: content/bench.json
+    fields:
+      - name: badge
+        label: Badge
+        widget: object
+        fields:
+          - { name: kind, label: Header }
+          - { name: year, label: Year }
+          - { name: role, label: Role, hint: "@title = your current job title." }
+          - { name: org, label: Org line }
+          - { name: loc, label: Location line }
+      - name: experience
+        label: Experience
+        widget: list
+        summary: "{{org}} · {{when}}"
+        fields:
+          - { name: org, label: Company }
+          - { name: role, label: Role, hint: "@title = your current job title." }
+          - { name: when, label: Dates, hint: 'e.g. "Feb 2026 — Present"' }
+          - { name: where, label: City }
+          - { name: text, label: Summary, widget: text, hint: "Nothing confidential: no client, product or internal names." }
+          - { name: points, label: Points, widget: list, field: { name: point, label: Point } }
+      - name: education
+        label: Education
+        widget: list
+        summary: "{{title}}"
+        fields:
+          - { name: title, label: Degree }
+          - { name: where, label: School }
+          - { name: when, label: Years }
+          - { name: note, label: Note }
+      - name: skills
+        label: Skills
+        widget: list
+        summary: "{{group}}"
+        fields:
+          - { name: group, label: Group }
+          - { name: items, label: Items, widget: list, field: { name: item, label: Item } }
+      - { name: hobbies, label: Hobbies, widget: list, field: { name: hobby, label: Hobby } }
+      - name: certificates
+        label: Certificates
+        widget: list
+        summary: "{{title}}"
+        fields:
+          - { name: title, label: Title }
+          - { name: org, label: Issuer }
+          - { name: when, label: When }
+          - { name: note, label: Note }
+          - name: file
+            label: Scan
+            widget: file
+            required: false
+            hint: "Optional PDF or image. Cover roll numbers, IDs and signatures before uploading."
+      - name: testimonials
+        label: Testimonials
+        widget: list
+        hint: "Real quotes only, from people who said yes to being quoted. The section stays hidden while this is empty."
+        summary: "{{name}}"
+        fields:
+          - { name: quote, label: Quote, widget: text }
+          - { name: name, label: Name }
+          - { name: role, label: Role, hint: 'e.g. "Trainer, Vector India"' }
+
+  - name: now
+    label: Now page
+    icon: schedule
+    file: content/now.json
+    fields:
+      - { name: updated, label: Last updated, widget: datetime, type: date, format: YYYY-MM-DD }
+      - { name: building, label: Building, widget: list, field: { name: item, label: Item, widget: text } }
+      - { name: learning, label: Learning, widget: list, field: { name: item, label: Item, widget: text } }
+      - { name: next, label: Next, widget: list, field: { name: item, label: Item, widget: text } }
+
+  - name: resume
+    label: Resume page
+    icon: description
+    file: content/resume.json
+    fields:
+      - { name: headline, label: Headline }
+      - { name: summary, label: Summary, widget: text }
+      - name: projects
+        label: Projects
+        widget: list
+        summary: "{{title}}"
+        fields:
+          - { name: title, label: Title }
+          - { name: when, label: When / context }
+          - { name: link, label: Link text, required: false, hint: "Shown as text, e.g. github.com/vgor15/imperfect_cell" }
+          - { name: points, label: Points, widget: list, field: { name: point, label: Point, widget: text } }

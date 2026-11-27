@@ -5,7 +5,7 @@
    ============================================================ */
 (() => {
   "use strict";
-  const S = window.SITE;
+  let S = window.SITE; // set for real in start(), once content.js has loaded /content/*.json
   const D = document;
   const html = D.documentElement;
   const qs = (s, c = D) => c.querySelector(s);
@@ -63,14 +63,14 @@
         <span class="hud__chip">BLR::<b class="js-here">--</b></span>
         <span class="hud__chip"><i class="live blink"></i>BUS::<b>0x500</b></span>
         <span class="hud__chip">STATUS::<b>${S.status}</b></span>
-        <button class="hud__chip js-snd" type="button" aria-pressed="false" aria-label="Toggle sound">SND::<b>OFF</b></button>
+        <button class="hud__chip js-snd" type="button" aria-pressed="false" title="Toggle sound">SND::<b>OFF</b></button>
       </div>`);
     D.body.append(hud);
 
     const label = pageLabel[PAGE];
     const logo = label
-      ? `<a class="logo" href="/" aria-label="${S.name}, home"><span class="logo__c">${S.initials[0]}</span><span class="logo__b"><span>${label}</span></span></a>`
-      : `<a class="logo" href="/" aria-label="${S.name}, home"><span class="logo__c">${S.initials[0]}</span><span class="logo__b"><span>${S.initials[1]}</span></span></a>`;
+      ? `<a class="logo" href="/"><span class="sr-only">${S.name}, home</span><span class="logo__c" aria-hidden="true">${S.initials[0]}</span><span class="logo__b" aria-hidden="true"><span>${label}</span></span></a>`
+      : `<a class="logo" href="/"><span class="sr-only">${S.name}, home</span><span class="logo__c" aria-hidden="true">${S.initials[0]}</span><span class="logo__b" aria-hidden="true"><span>${S.initials[1]}</span></span></a>`;
     const navLinks = S.nav.map((n) => {
       const on = PATH === n.href || PATH.startsWith(n.href + "/");
       return `<a href="${n.href}"${on ? ' class="is-active" aria-current="page"' : ""}>${n.label}</a>`;
@@ -81,7 +81,7 @@
         ${logo}
         <div class="navwrap">
           <nav class="navpill" aria-label="Primary">${navLinks}</nav>
-          <button class="iconbtn kbtn js-pal" type="button" aria-label="Open command menu">⌘K</button>
+          <button class="iconbtn kbtn js-pal" type="button" aria-label="⌘K command menu">⌘K</button>
         </div>
         <div class="hdr__right">
           <button class="iconbtn js-wn" type="button" aria-label="What’s new">${I.bell}<i class="bell-dot" hidden></i></button>
@@ -223,7 +223,7 @@
     const pal = make(`
       <div class="pal" role="dialog" aria-modal="true" aria-label="Command menu">
         <div class="pal__search">${I.search}<input type="text" placeholder="Search anything" aria-label="Search" autocomplete="off" spellcheck="false"></div>
-        <div class="pal__list" role="listbox"></div>
+        <div class="pal__list" role="listbox" aria-label="Results"></div>
         <div class="pal__empty">No results.</div>
         <div class="pal__foot"><span><kbd>↑↓</kbd>Navigate</span><span><kbd>↵</kbd>Select</span><span><kbd>esc</kbd>Close</span></div>
       </div>`);
@@ -626,6 +626,13 @@
       gsap.from(".hdr > *", { y: -14, opacity: 0, duration: 0.8, ease: "power3.out", stagger: 0.06, delay: 0.15 });
     }
   }
-  if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", boot);
-  else boot();
+  /* build the page once both the DOM and the content files are ready */
+  const domReady = new Promise((r) => (D.readyState === "loading" ? D.addEventListener("DOMContentLoaded", r, { once: true }) : r()));
+  Promise.all([window.SITE_READY || Promise.resolve(window.SITE), domReady]).then(
+    ([site]) => {
+      S = V.S = site || window.SITE;
+      boot();
+    },
+    () => {} // content.js already shows the error box
+  );
 })();

@@ -5,13 +5,16 @@
    ============================================================ */
 (() => {
   if (window.VShell) return;
-  const S = window.SITE;
+  let S = window.SITE; // content loads async; read it again when a shell is created
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const email = () => String.fromCharCode(...S.mail.u) + "@" + String.fromCharCode(...S.mail.d);
 
-  /* ---------- virtual filesystem ---------- */
+  /* ---------- virtual filesystem (built from SITE on first use) ---------- */
   const proj = (w) => `${w.title} (${w.year}) ${w.by}\n${w.summary}\n${/^https?:/.test(w.href) ? "repo: " + w.href : "page: " + w.href}`;
-  const FS = {
+  let FS = null;
+  const buildFS = () => {
+  S = window.SITE;
+  FS = {
     "/": { type: "dir", kids: ["home"] },
     "/home": { type: "dir", kids: ["vyom"] },
     "/home/vyom": { type: "dir", kids: ["about.txt", "skills.txt", "contact.txt", "projects", "lab", "writing", ".cellrc"] },
@@ -26,6 +29,7 @@
   S.work.filter((w) => !w.hidden).forEach((w) => { FS["/home/vyom/projects/" + w.title.toLowerCase().replace(/[^a-z0-9]+/g, "_") + ".md"] = { type: "file", body: () => proj(w) }; });
   S.lab.forEach((l) => { FS["/home/vyom/lab/" + l.slug] = { type: "link", href: "/lab/" + l.slug, body: () => `${l.title}: ${l.desc}\n→ open lab/${l.slug}` }; });
   S.writing.forEach((w) => { FS["/home/vyom/writing/" + w.slug + ".md"] = { type: "link", href: "/writing/" + w.slug, body: () => `# ${w.title}\n${w.excerpt}\n→ open writing/${w.slug}.md` }; });
+  };
 
   const resolve = (cwd, p) => {
     if (!p || p === "~") return "/home/vyom";
@@ -39,6 +43,7 @@
   const PAGES = { home: "/", about: "/about", lab: "/lab", writing: "/writing", bench: "/bench", contact: "/contact", changelog: "/changelog", record: "/record" };
 
   function create(host, opts = {}) {
+    if (!FS) buildFS();
     host.innerHTML = `
       <div class="term__bar"><i></i><i></i><i></i><span>cell — imperfect_cell v1 — 80×24</span></div>
       <div class="term__body" tabindex="-1"></div>`;

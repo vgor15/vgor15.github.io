@@ -1,0 +1,8 @@
+[
+  { "slug": "can-bus", "title": "CAN Bus Lab", "tags": ["SIM"], "isNew": true, "desc": "Two LPC2129 nodes, one bus. Flip the switches and watch frame 0x500 land on the LCD." },
+  { "slug": "glyph-studio", "title": "Glyph Studio", "tags": ["TOOL"], "isNew": true, "desc": "Draw 5×8 HD44780 glyphs and copy the CGRAM array straight into C." },
+  { "slug": "logic-analyzer", "title": "Logic Analyzer", "tags": ["CANVAS"], "isNew": true, "desc": "Type a byte, see it on the wire as UART, I2C or SPI, decoded." },
+  { "slug": "register-flipper", "title": "Register Flipper", "tags": ["UI"], "isNew": true, "desc": "Flip LPC2129 port bits and get the IOSET / IOCLR line for free." },
+  { "slug": "led-matrix", "title": "LED Matrix", "tags": ["CANVAS"], "isNew": true, "desc": "A grid of LEDs on one spring integration, pushed around by your cursor." },
+  { "slug": "shell", "title": "imperfect_cell", "tags": ["TERMINAL"], "isNew": true, "desc": "My C shell's prompt, rebuilt for the browser. Try `help`." }
+]

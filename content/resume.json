@@ -1,0 +1,25 @@
+{
+  "headline": "Embedded Software Engineer",
+  "summary": "Embedded software engineer working in C and C++ close to the hardware: ARM7 microcontrollers, CAN, I2C, SPI and UART, and Linux system programming. Currently at VVDN Technologies on production-test tooling for embedded Linux hardware. B.Tech in Computer Engineering (9.08 CGPA).",
+  "projects": [
+    {
+      "title": "CAN Automotive Dashboard (two-node CAN 2.0B on LPC2129)",
+      "when": "2025 · Vector India · team of 3",
+      "link": "github.com/vgor15/LPC2129_CAN_Automotive_Dashboard",
+      "points": [
+        "Node A reads a speed potentiometer and an MCP9700 sensor over the ADC plus three switches, and transmits frame 0x500 on CAN2, paced by a Timer1 interrupt.",
+        "Node B decodes frames in a CAN2 receive interrupt and drives a 16×2 HD44780 LCD (4-bit mode) with custom CGRAM glyphs, plus status LEDs.",
+        "Developed in Embedded C with Keil µVision, flashed with Flash Magic, debugged over UART0."
+      ]
+    },
+    {
+      "title": "imperfect_cell: a Unix-like shell in C",
+      "when": "Jan 2026",
+      "link": "github.com/vgor15/imperfect_cell",
+      "points": [
+        "Read–eval–execute loop with getline, strtok tokenisation and built-ins (echo, env, exit).",
+        "Runs external programs with fork, execvp and wait; error-checked wrappers for every system call."
+      ]
+    }
+  ]
+}
