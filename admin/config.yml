@@ -9,6 +9,8 @@ backend:
   name: github
   repo: vgor15/vgor15.github.io
   branch: main
+  # Token sign-in only: "Sign In with GitHub" needs an OAuth server this free setup does not run.
+  auth_methods: [token]
   commit_messages:
     create: "content: add {{collection}} {{slug}}"
     update: "content: update {{collection}} {{slug}}"
