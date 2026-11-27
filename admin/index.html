@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Admin :: Vyom Gor</title>
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="same-origin">
+  <!-- Policy from https://sveltiacms.app/docs/security (base + GitHub backend + HEIC worker).
+       Only the pinned CMS bundle from unpkg may run; data goes to GitHub's API and nowhere else. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' blob: data: https://*.githubusercontent.com; media-src blob:; frame-src blob:; worker-src 'self' blob:; connect-src 'self' blob: data: https://unpkg.com https://api.github.com https://www.githubstatus.com; manifest-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <script src="/assets/js/frame-guard.js" data-strict></script>
+</head>
+<body>
+  <noscript>The admin panel needs JavaScript.</noscript>
+  <!-- Sveltia CMS, pinned to an exact version with a Subresource Integrity hash.
+       To upgrade: see docs/EDITING.md ("Updating the admin panel"). -->
+  <script src="https://unpkg.com/@sveltia/cms@5.0.2/dist/sveltia-cms.js" integrity="sha256-FPVL05w08HF3tOmogazUNFQ5CZPfK/0OgzrG4rtm8m0=" crossorigin="anonymous"></script>
+</body>
+</html>

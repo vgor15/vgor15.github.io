@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /record
+Disallow: /admin/
 
 Sitemap: https://vgor15.github.io/sitemap.xml
