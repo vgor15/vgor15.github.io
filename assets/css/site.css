@@ -1025,3 +1025,11 @@ html.party .hud__chip b, html.party .navpill a.is-active { animation: party-glow
 html.party .hud { background-image: linear-gradient(90deg, #d9bc7222, #c2563a22, #3f6fb522, #9fd24a22); }
 @keyframes party-glow { from { color: var(--gold); text-shadow: 0 0 0 transparent; } to { color: #c2563a; text-shadow: 0 0 10px #d9bc72aa; } }
 @media (prefers-reduced-motion: reduce) { html.party .hud__chip b, html.party .navpill a.is-active { animation: none; } .spark { display: none; } }
+
+/* gold ink behind the Contact letter (assets/js/ink.js) */
+.ink { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: block; }
+body[data-page="contact"] main { position: relative; z-index: 1; }
+
+/* playable 404 (assets/js/breakout.js) */
+.bo { width: min(560px, calc(100vw - 2 * var(--gutter))); margin: 30px auto 0; display: grid; gap: 10px; }
+.bo__cv { width: 100%; aspect-ratio: 23 / 17; border-radius: 12px; display: block; touch-action: none; cursor: crosshair; box-shadow: var(--shadow-card); }
