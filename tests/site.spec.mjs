@@ -59,7 +59,8 @@ for (const path of PAGES) {
       expect(html).toContain("object-src 'none'");
       expect(html).toContain('<meta name="referrer" content="no-referrer">');
       expect(html).toContain("/assets/js/frame-guard.js");
-      expect(html, "an email address is written into the HTML").not.toMatch(EMAIL);
+      const emails = (html.match(new RegExp(EMAIL.source, "g")) || []).filter((m) => !/@example\.(com|org)$/.test(m));
+      expect(emails, "an email address is written into the HTML").toEqual([]);
       await open(page, path);
       const unsafe = await page.$$eval('a[target="_blank"]', (as) => as.filter((a) => !/noopener/.test(a.rel) || !/noreferrer/.test(a.rel)).map((a) => a.href));
       expect(unsafe, "new-tab links without rel=noopener noreferrer").toEqual([]);

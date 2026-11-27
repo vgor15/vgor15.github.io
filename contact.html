@@ -57,16 +57,16 @@
         <div class="letter__dear">Dear Vyom,</div>
         <div class="l-re"><span>RE ::</span>
           <div class="l-re__opts" role="group" aria-label="Regarding">
-            <button type="button" data-re="Opportunity"></button>
-            <button type="button" data-re="A collaboration"></button>
-            <button type="button" data-re="Just a hello"></button>
+            <button type="button" data-re="Opportunity" aria-pressed="true">[X] Opportunity</button>
+            <button type="button" data-re="A collaboration" aria-pressed="false">[ ] A collaboration</button>
+            <button type="button" data-re="Just a hello" aria-pressed="false">[ ] Just a hello</button>
           </div>
         </div>
-        <label class="l-field"><span>FROM ::</span><input id="from" type="email" placeholder="you@company.com" autocomplete="email" required></label>
+        <label class="l-field"><span>FROM ::</span><input id="from" type="email" placeholder="you@example.com" autocomplete="email" required></label>
         <label class="l-field"><span>VIA ::</span><input id="via" type="text" placeholder="A friend, LinkedIn, GitHub, a search… (optional)"></label>
         <textarea class="l-body" id="letter" placeholder="What are we building?" aria-label="The letter"></textarea>
         <div class="l-sinc">Sincerely,</div>
-        <div class="l-sign"><canvas aria-label="Signature pad"></canvas><span class="l-sign__ph">sign here</span><button class="l-sign__clr" type="button" hidden>Clear</button></div>
+        <div class="l-sign"><canvas role="img" aria-label="Signature pad: draw your signature with a finger or mouse"></canvas><span class="l-sign__ph">sign here</span><button class="l-sign__clr" type="button" hidden>Clear</button></div>
         <div class="l-name"><input id="name" type="text" placeholder="Your name" autocomplete="name" aria-label="Your name"></div>
         <div class="l-foot"><small class="js-status">One reply, no newsletter · not yet signed</small><button class="l-send" type="button" disabled>Send it</button></div>
       </div>

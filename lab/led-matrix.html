@@ -33,14 +33,14 @@
       <p>Every LED is a damped spring tied to its home position, all integrated on one ticker. Move over it, press to push harder, and tune the physics.</p>
     </header>
     <section class="exp__stage exp__grid">
-      <canvas class="matrix" id="matrix" aria-label="Interactive LED matrix"></canvas>
+      <canvas class="matrix" id="matrix" role="img" aria-label="Interactive LED matrix"></canvas>
       <div class="ctrl">
         <div class="seg-inline" role="group" aria-label="Mode"><button type="button" data-mode="repel" class="is-on">Repel</button><button type="button" data-mode="attract">Attract</button></div>
-        <label class="ctrl__row"><span>Stiffness</span><input id="k" type="range" min="0.01" max="0.2" step="0.005" value="0.06"><output for="k"></output></label>
-        <label class="ctrl__row"><span>Damping</span><input id="damp" type="range" min="0.6" max="0.97" step="0.01" value="0.86"><output for="damp"></output></label>
-        <label class="ctrl__row"><span>Radius</span><input id="radius" type="range" min="40" max="260" step="5" value="120"><output for="radius"></output></label>
-        <label class="ctrl__row"><span>Force</span><input id="force" type="range" min="0.2" max="2.5" step="0.1" value="1"><output for="force"></output></label>
-        <label class="ctrl__row"><span>Pitch</span><input id="gap" type="range" min="14" max="40" step="1" value="22"><output for="gap"></output></label>
+        <div class="ctrl__row"><label for="k">Stiffness</label><input id="k" type="range" min="0.01" max="0.2" step="0.005" value="0.06"><output for="k"></output></div>
+        <div class="ctrl__row"><label for="damp">Damping</label><input id="damp" type="range" min="0.6" max="0.97" step="0.01" value="0.86"><output for="damp"></output></div>
+        <div class="ctrl__row"><label for="radius">Radius</label><input id="radius" type="range" min="40" max="260" step="5" value="120"><output for="radius"></output></div>
+        <div class="ctrl__row"><label for="force">Force</label><input id="force" type="range" min="0.2" max="2.5" step="0.1" value="1"><output for="force"></output></div>
+        <div class="ctrl__row"><label for="gap">Pitch</label><input id="gap" type="range" min="14" max="40" step="1" value="22"><output for="gap"></output></div>
         <p class="label" style="margin-top:8px;line-height:1.6">a = −k·(x − home) · then v *= damping<br>no pointer → it wanders on its own</p>
       </div>
     </section>

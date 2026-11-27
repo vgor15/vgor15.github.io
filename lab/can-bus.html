@@ -38,8 +38,8 @@
         <div class="node">
           <div class="node__head"><b>Node A · LPC2129</b><span class="tag">TX · CAN2</span></div>
           <div class="ctrl">
-            <label class="ctrl__row"><span>Speed pot · AIN2</span><input id="speed" type="range" min="0" max="1023" value="512"><output id="speedOut"></output></label>
-            <label class="ctrl__row"><span>MCP9700 · AIN1</span><input id="temp" type="range" min="0" max="60" value="26"><output id="tempOut"></output></label>
+            <div class="ctrl__row"><label for="speed">Speed pot · AIN2</label><input id="speed" type="range" min="0" max="1023" value="512"><output id="speedOut"></output></div>
+            <div class="ctrl__row"><label for="temp">MCP9700 · AIN1</label><input id="temp" type="range" min="0" max="60" value="26"><output id="tempOut"></output></div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <button class="sw" type="button" data-sw="0" aria-pressed="false"><i></i>Headlight</button>
               <button class="sw" type="button" data-sw="1" aria-pressed="false"><i></i>Left</button>
@@ -54,7 +54,7 @@
         </div>
         <div class="node">
           <div class="node__head"><b>Node B · LPC2129</b><span class="tag">RX · IRQ 27</span></div>
-          <div class="lcd"><canvas id="lcd" aria-label="16 by 2 character LCD"></canvas></div>
+          <div class="lcd"><canvas id="lcd" role="img" aria-label="16 by 2 character LCD"></canvas></div>
           <div class="leds"><span><i></i>LED1 · head</span><span><i></i>LED2 · left</span><span><i></i>LED3 · right</span></div>
         </div>
       </div>

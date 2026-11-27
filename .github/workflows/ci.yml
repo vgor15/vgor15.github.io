@@ -112,5 +112,11 @@ jobs:
       - run: node scripts/build.mjs
       - uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2
         with:
-          args: --offline --no-progress --root-dir ${{ github.workspace }}/_site --fallback-extensions html --index-files index.html '_site/**/*.html'
+          # GitHub Pages serves /lab from lab.html even though a lab/ folder exists; the remap does the same.
+          args: >-
+            --offline --no-progress
+            --root-dir ${{ github.workspace }}/_site
+            --fallback-extensions html --index-files index.html
+            --remap '^(file://.*/_site/(?:lab|writing))/?$ $1.html'
+            '_site/**/*.html'
           fail: true
