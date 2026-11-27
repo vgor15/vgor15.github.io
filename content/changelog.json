@@ -1,4 +1,5 @@
 [
+  { "type": "Site", "date": "2026-11-27", "title": "Made for phones", "desc": "Fits every iPhone screen, bigger tap targets, clearer text and notch-safe edges.", "href": "/" },
   { "type": "Site", "date": "2026-11-22", "title": "Resume, Now and Notes", "desc": "A printable web CV, what I'm on right now, and short TIL notes.", "href": "/resume" },
   { "type": "Writing", "date": "2026-11-22", "title": "The flag that never changed", "desc": "volatile and ISRs, with my own CAN code.", "href": "/writing/the-flag-that-never-changed" },
   { "type": "Site", "date": "2026-11-21", "title": "The new site is live", "desc": "Rebuilt from scratch: two wheels, a lab and a bus you can drive.", "href": "/" },
