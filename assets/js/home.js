@@ -53,10 +53,15 @@ document.addEventListener("vg:ready", () => {
     const W = innerWidth, H = innerHeight;
     const mobile = W < 760;
     if (mobile) {
-      const pw = Math.min(W * 0.78, 420);
-      G = { mobile, W, H, pw, ph: pw / 1.62, R: W * 1.25, cx: W / 2, cy: H * 0.36 + W * 1.25, a: 0.62 };
+      // Plate and caption as one block, centred between the header and the hint.
+      const pw = Math.min(W * 0.82, 420), ph = pw / 1.62;
+      const top = 96, bottom = H - 76, textH = 160, gap = Math.max(16, Math.min(32, H * 0.035));
+      const blockTop = top + Math.max(0, (bottom - top - (ph + gap + textH)) / 2);
+      const pcy = blockTop + ph / 2;
+      G = { mobile, W, H, pw, ph, R: W * 1.25, cx: W / 2, cy: pcy + W * 1.25, a: 0.62 };
+      root.style.setProperty("--wt-top", blockTop + ph + gap + "px");
     } else {
-      const pw = Math.max(260, Math.min(W * 0.3, 520));
+      const pw = Math.max(200, Math.min(W * 0.3, 520, H * 0.62)); // H cap keeps phones in landscape clear of the caption
       const ph = pw / 1.62;
       const fx = W * 0.23, fy = H * 0.53;
       const t = (0.15 * W) / (0.36 * H);
