@@ -14,7 +14,7 @@ Everything here is free: GitHub Pages, GitHub Actions and the security features 
 
 **In the browser**
 - A strict Content Security Policy on every page: scripts only from this site (plus cal.com when someone
-  asks to book), no plugins, no inline scripts, no base-tag or form hijacking, HTTPS upgraded.
+  asks to book), no plugins, no inline scripts, no base-tag or form hijacking.
 - A frame guard (`assets/js/frame-guard.js`) against clickjacking, because GitHub Pages can't send
   `X-Frame-Options`. The admin panel refuses every frame.
 - `no-referrer`, `rel="noopener noreferrer"` on every new-tab link, no cookies, no third-party requests on load.
