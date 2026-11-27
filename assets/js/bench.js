@@ -51,7 +51,7 @@ document.addEventListener("vg:ready", () => {
   ];
   const dsEl = qs(".js-ds");
   const pinSvg = () => {
-    let s = `<svg viewBox="0 0 360 300" role="img" aria-label="DIP-16 chip with skills as pins">
+    let s = `<svg viewBox="0 0 360 300" role="group" aria-label="DIP-16 chip with skills as pins">
       <rect x="110" y="20" width="140" height="260" rx="8" fill="var(--ink)"/>
       <path d="M165 20a15 15 0 0 0 30 0" fill="var(--surface)"/>
       <circle cx="128" cy="40" r="5" fill="var(--surface)" opacity=".5"/>
@@ -109,7 +109,7 @@ document.addEventListener("vg:ready", () => {
       <h3 class="cert__t">${c.title}</h3>
       <span class="cert__o">${c.org}</span>
       <p class="cert__n">${c.note}</p>
-      <div class="cert__f"><span>${c.when}</span><span>${c.file ? `<a href="${c.file}" target="_blank" rel="noopener">View original ↗</a>` : "Original on request"}</span></div>
+      <div class="cert__f"><span>${c.when}</span><span>${c.file ? `<a href="${c.file}" target="_blank" rel="noopener noreferrer">View original ↗</a>` : "Original on request"}</span></div>
     </article>`).join("");
 
   /* ---------- testimonials (hidden until real quotes exist) ---------- */
