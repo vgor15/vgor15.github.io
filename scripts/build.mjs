@@ -19,7 +19,7 @@ const CONTENT = ["site", "work", "about", "bench", "lab", "writing", "changelog"
 const PUBLISH = [
   ".nojekyll", ".well-known", "404.html", "about.html", "admin", "assets", "bench.html", "changelog.html",
   "contact.html", "content", "index.html", "lab", "lab.html", "notes.html", "now.html", "record.html",
-  "resume.html", "robots.txt", "writing", "writing.html", "favicon.ico",
+  "resume.html", "robots.txt", "writing", "writing.html", "favicon.ico", "board.html",
 ];
 
 const readJson = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf8"));
@@ -87,7 +87,7 @@ async function main() {
   const urls = [
     ["/", siteDate], ["/about", siteDate], ["/lab", siteDate], ["/writing", (S.writing[0] && S.writing[0].date) || siteDate],
     ["/bench", siteDate], ["/contact", siteDate], ["/resume", siteDate], ["/now", (S.now && S.now.updated) || siteDate],
-    ["/notes", siteDate], ["/changelog", siteDate],
+    ["/notes", siteDate], ["/changelog", siteDate], ["/board", siteDate],
     ...S.lab.map((l) => [`/lab/${l.slug}`, siteDate]),
     ...S.writing.map((w) => [`/writing/${w.slug}`, w.updated || w.date]),
   ];
