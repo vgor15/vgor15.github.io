@@ -1,0 +1,86 @@
+[
+  {
+    "slug": "can-dashboard",
+    "title": "CAN Dashboard",
+    "by": "w/vector india",
+    "year": "2025",
+    "hidden": false,
+    "href": "https://github.com/vgor15/LPC2129_CAN_Automotive_Dashboard",
+    "plate": "canIllo",
+    "img": "",
+    "icon": "can",
+    "summary": "Two LPC2129 ECUs on one CAN 2.0B bus: speed, temperature and indicators."
+  },
+  {
+    "slug": "imperfect-cell",
+    "title": "imperfect_cell",
+    "by": "w/linux",
+    "year": "2026",
+    "hidden": false,
+    "href": "https://github.com/vgor15/imperfect_cell",
+    "plate": "terminal",
+    "img": "",
+    "icon": "cell",
+    "summary": "A Unix-like shell in C: fork, execvp, wait, and a prompt with attitude."
+  },
+  {
+    "slug": "production-test",
+    "title": "Production Test",
+    "by": "w/vvdn",
+    "year": "2026",
+    "hidden": false,
+    "href": "/bench",
+    "plate": "test",
+    "img": "",
+    "icon": "test",
+    "summary": "Linux production-test tooling for embedded hardware. Details stay with the company."
+  },
+  {
+    "slug": "can-bus-lab",
+    "title": "CAN Bus Lab",
+    "by": "w/lab",
+    "year": "2026",
+    "hidden": false,
+    "href": "/lab/can-bus",
+    "plate": "lcdPlate",
+    "img": "",
+    "icon": "lcd",
+    "summary": "The dashboard firmware, replayed in your browser."
+  },
+  {
+    "slug": "dsa-cpp",
+    "title": "DSA in C++",
+    "by": "w/leetcode",
+    "year": "2026",
+    "hidden": false,
+    "href": "https://github.com/vgor15/Leetcode",
+    "plate": "tree",
+    "img": "",
+    "icon": "tree",
+    "summary": "Problem-solving practice, one tree and one pointer at a time."
+  },
+  {
+    "slug": "tictactoe",
+    "title": "TicTacToe",
+    "by": "w/c",
+    "year": "2025",
+    "hidden": true,
+    "href": "",
+    "plate": "grid",
+    "img": "",
+    "icon": "grid",
+    "summary": "Console game in C with ANSI colours."
+  },
+  {
+    "slug": "lpc2129-drivers",
+    "title": "LPC2129 Drivers",
+    "by": "w/vector india",
+    "year": "2025",
+    "hidden": true,
+    "href": "",
+    "plate": "lcd",
+    "img": "",
+    "icon": "chip",
+    "summary": "LCD, LED and UART drivers on ARM7."
+  }
+]

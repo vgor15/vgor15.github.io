@@ -5,7 +5,7 @@
    ============================================================ */
 (() => {
   "use strict";
-  const S = window.SITE;
+  let S = window.SITE; // set for real in start(), once content.js has loaded /content/*.json
   const D = document;
   const html = D.documentElement;
   const qs = (s, c = D) => c.querySelector(s);
@@ -626,6 +626,13 @@
       gsap.from(".hdr > *", { y: -14, opacity: 0, duration: 0.8, ease: "power3.out", stagger: 0.06, delay: 0.15 });
     }
   }
-  if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", boot);
-  else boot();
+  /* build the page once both the DOM and the content files are ready */
+  const domReady = new Promise((r) => (D.readyState === "loading" ? D.addEventListener("DOMContentLoaded", r, { once: true }) : r()));
+  Promise.all([window.SITE_READY || Promise.resolve(window.SITE), domReady]).then(
+    ([site]) => {
+      S = V.S = site || window.SITE;
+      boot();
+    },
+    () => {} // content.js already shows the error box
+  );
 })();

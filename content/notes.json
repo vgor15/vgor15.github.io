@@ -1,0 +1,11 @@
+[
+  { "tag": "C", "title": "volatile is for things that change behind your back", "body": "A flag set inside an ISR and polled in main() must be volatile, or the compiler may read it once and loop forever on a stale copy." },
+  { "tag": "ARM7", "title": "IOSET and IOCLR only listen to ones", "body": "On the LPC2129, writing 1 to a bit in IOSET drives the pin high and IOCLR drives it low. Writing 0 does nothing, so no read-modify-write is needed." },
+  { "tag": "CAN", "title": "Five in a row gets a stuff bit", "body": "After five identical bits the transmitter inserts one opposite bit so receivers keep their clocks in sync. The receiver strips it back out." },
+  { "tag": "HW", "title": "MCP9700: 500 mV means 0 °C", "body": "The sensor outputs 500 mV at 0 °C plus 10 mV per degree, so T = (V − 0.5) / 0.01. Forget the offset and every room is 50 °C." },
+  { "tag": "LCD", "title": "Eight custom glyphs live at 0x40", "body": "An HD44780 has 64 bytes of CGRAM: eight 5×8 characters. Set address 0x40, write eight rows per glyph, then print them as characters 0–7." },
+  { "tag": "Linux", "title": "fork() returns twice", "body": "Once in the parent with the child's PID, once in the child with 0. Every shell starts its work by checking which one it is." },
+  { "tag": "C", "title": "strtok() remembers where it stopped", "body": "It keeps hidden static state between calls, so it isn't reentrant or thread-safe. In threaded code, use strtok_r()." },
+  { "tag": "Linux", "title": "cd has to be a built-in", "body": "chdir() only changes the calling process's directory. Run it in a child and the change disappears when the child exits." },
+  { "tag": "C", "title": "getline() can allocate for you", "body": "Pass a NULL pointer and a size of 0 and getline() mallocs a buffer big enough for the whole line. You still have to free() it." }
+]

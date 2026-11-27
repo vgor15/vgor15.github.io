@@ -1,0 +1,14 @@
+[
+  { "type": "Site", "date": "2026-11-22", "title": "Resume, Now and Notes", "desc": "A printable web CV, what I'm on right now, and short TIL notes.", "href": "/resume" },
+  { "type": "Writing", "date": "2026-11-22", "title": "The flag that never changed", "desc": "volatile and ISRs, with my own CAN code.", "href": "/writing/the-flag-that-never-changed" },
+  { "type": "Site", "date": "2026-11-21", "title": "The new site is live", "desc": "Rebuilt from scratch: two wheels, a lab and a bus you can drive.", "href": "/" },
+  { "type": "Lab", "date": "2026-11-21", "title": "CAN Bus Lab", "desc": "My Vector India dashboard, replayed in the browser.", "href": "/lab/can-bus" },
+  { "type": "Lab", "date": "2026-11-21", "title": "Glyph Studio", "desc": "Design LCD glyphs, export the C array.", "href": "/lab/glyph-studio" },
+  { "type": "Writing", "date": "2026-11-21", "title": "Two ECUs, one bus", "desc": "CAN on the LPC2129, from ADC to LCD.", "href": "/writing/two-ecus-one-bus" },
+  { "type": "Work", "date": "2026-02-01", "title": "Joined VVDN Technologies", "desc": "Embedded software on Linux production-test tooling.", "href": "/bench" },
+  { "type": "Code", "date": "2026-01-26", "title": "Shipped imperfect_cell", "desc": "A Unix-like shell in C.", "href": "https://github.com/vgor15/imperfect_cell" },
+  { "type": "Work", "date": "2026-01-05", "title": "Lab Coordinator at Vector India", "desc": "Teaching C, Embedded C and Linux in the lab.", "href": "/bench" },
+  { "type": "Code", "date": "2025-11-27", "title": "CAN dashboard open-sourced", "desc": "Two-node CAN on LPC2129, on GitHub.", "href": "https://github.com/vgor15/LPC2129_CAN_Automotive_Dashboard" },
+  { "type": "Milestone", "date": "2025-11-15", "title": "Embedded Systems certification", "desc": "Six months at Vector India.", "href": "/bench" },
+  { "type": "Milestone", "date": "2025-06-01", "label": "2025", "title": "B.Tech, 9.08 CGPA", "desc": "Computer Engineering, Silver Oak University.", "href": "/bench" }
+]

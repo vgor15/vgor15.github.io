@@ -1,0 +1,41 @@
+{
+  "name": "Vyom Gor",
+  "first": "Vyom",
+  "initials": ["V", "G"],
+  "role": "Embedded Software Engineer",
+  "title": {
+    "current": "Embedded Software Engineer (Trainee)",
+    "next": "Embedded Software Engineer",
+    "switchOn": "2027-02-27"
+  },
+  "tagline": "Close to the metal. Clear in the mind.",
+  "company": "VVDN Technologies",
+  "city": "Bengaluru",
+  "country": "India",
+  "tz": "Asia/Kolkata",
+  "tzLabel": "IST",
+  "pos": "N 12°58′19″ / E 77°35′40″",
+  "status": "BUILDING @ VVDN",
+  "github": { "user": "vgor15", "contributions": 54, "repos": 19 },
+  "emailEncoded": "dnlvbWdvcjE1MDNAZ21haWwuY29t",
+  "cal": "vyom-gor-1503/15min",
+  "resume": "/resume",
+  "photo": "/assets/img/profile.jpg",
+  "socials": [
+    { "label": "GitHub", "url": "https://github.com/vgor15", "icon": "github" },
+    { "label": "LinkedIn", "url": "https://www.linkedin.com/in/vyom-gor/", "icon": "linkedin" },
+    { "label": "X (Twitter)", "url": "https://x.com/VyomGor15", "icon": "x" }
+  ],
+  "nav": [
+    { "label": "About", "href": "/about" },
+    { "label": "Lab", "href": "/lab" },
+    { "label": "Writing", "href": "/writing" },
+    { "label": "Bench", "href": "/bench" },
+    { "label": "Contact", "href": "/contact" }
+  ],
+  "credit": { "text": "Design inspired by Carter Ogunsola", "url": "https://carterogunsola.com" },
+  "integrations": {
+    "goatcounter": "",
+    "web3formsKey": ""
+  }
+}

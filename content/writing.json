@@ -1,0 +1,34 @@
+[
+  {
+    "slug": "two-ecus-one-bus",
+    "title": "Two ECUs, one bus",
+    "tag": "EMBEDDED",
+    "date": "2026-11-21",
+    "minutes": 6,
+    "excerpt": "How a speed pot, a temperature sensor and three switches on one LPC2129 end up on another board's LCD, one CAN frame at a time."
+  },
+  {
+    "slug": "a-shell-is-a-loop",
+    "title": "A shell is just a loop",
+    "tag": "LINUX",
+    "date": "2026-11-21",
+    "minutes": 5,
+    "excerpt": "Read, split, fork, exec, wait, repeat. What writing imperfect_cell taught me about processes in C."
+  },
+  {
+    "slug": "the-flag-that-never-changed",
+    "title": "The flag that never changed",
+    "tag": "EMBEDDED",
+    "date": "2026-11-21",
+    "minutes": 4,
+    "excerpt": "An ISR sets a flag and main() waits for it. Why my CAN code got away without volatile, and the one-line loop where it wouldn't."
+  },
+  {
+    "slug": "pointers-at-the-lab-bench",
+    "title": "Pointers at the lab bench",
+    "tag": "C",
+    "date": "2026-11-21",
+    "minutes": 5,
+    "excerpt": "What I learned explaining pointers to a new batch every week as a lab coordinator: the three pictures that make it click."
+  }
+]

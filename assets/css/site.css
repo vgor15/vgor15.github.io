@@ -866,3 +866,6 @@ button.hud__chip:hover b { color: var(--gold); }
   [data-rv] { opacity: 1 !important; }
 }
 .badge__icon img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; border-radius: inherit; filter: grayscale(0.15) contrast(1.04); }
+
+/* content load failure */
+.content-error { margin: calc(var(--hud-h, 32px) + 96px) auto 40px; max-width: 30rem; padding: 20px 22px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); font-size: 15px; line-height: 1.5; display: grid; gap: 14px; justify-items: start; }
