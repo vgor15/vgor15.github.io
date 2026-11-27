@@ -162,7 +162,15 @@ document.addEventListener("vg:ready", () => {
     fieldLabel.textContent = bit.f === "IDLE" ? "BUS IDLE" : `${bit.f}${bit.stuff ? " · STUFF" : ""}`;
   };
   for (let i = 0; i < CELLS; i++) step();
-  setInterval(step, REDUCED ? 400 : 45);
+  // Replay the bus only while it is on screen and the tab is visible.
+  let busTimer = 0, busSeen = false;
+  const busRun = () => {
+    const on = busSeen && !document.hidden;
+    if (on && !busTimer) busTimer = setInterval(step, REDUCED ? 400 : 45);
+    if (!on && busTimer) { clearInterval(busTimer); busTimer = 0; }
+  };
+  new IntersectionObserver((es) => { busSeen = es[0].isIntersecting; busRun(); }).observe(grid);
+  document.addEventListener("visibilitychange", busRun);
 
   /* ---------- intro ---------- */
   if (!REDUCED) {

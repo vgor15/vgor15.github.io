@@ -143,8 +143,12 @@ document.addEventListener("vg:ready", () => {
   badge.addEventListener("pointercancel", end);
   badge.addEventListener("dblclick", () => (s.v += 0.12));
 
+  // The physics keep running, but the page is only touched while the pass actually swings.
+  let lastA = NaN;
   gsap.ticker.add(() => {
-    if (!s.drag) { s.v += -s.a * K; s.v *= DAMP; s.a += s.v; }
+    if (!s.drag) { s.v += -s.a * K; s.v *= DAMP; s.a += s.v; if (Math.abs(s.a) < 1e-4 && Math.abs(s.v) < 1e-5) { s.a = 0; s.v = 0; } }
+    if (Math.abs(s.a - lastA) < 1e-5) return;
+    lastA = s.a;
     rig.style.transform = `rotate(${s.a * 57.3}deg)`;
     card.style.setProperty("--sheen", `${-60 + s.a * 160}%`);
   });

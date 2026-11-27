@@ -16,7 +16,8 @@ export default defineConfig({
     screenshot: "only-on-failure",
   },
   webServer: {
-    command: "node scripts/serve.mjs 4173",
+    // Test exactly what gets published: build _site/ first, then serve it like GitHub Pages does.
+    command: "node scripts/build.mjs && node scripts/serve.mjs 4173 _site",
     url: "http://localhost:4173/",
     reuseExistingServer: !process.env.CI,
     timeout: 20_000,

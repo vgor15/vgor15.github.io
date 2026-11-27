@@ -120,18 +120,20 @@
     tick();
     setInterval(tick, 1000);
 
+    // FPS rides on GSAP's own frame loop instead of a second requestAnimationFrame loop.
     let frames = 0, last = performance.now();
     const fpsEls = qsa(".js-fps");
-    const loop = (now) => {
+    const count = () => {
+      const now = performance.now();
       frames++;
-      if (now - last >= 500) {
-        const fps = Math.round((frames * 1000) / (now - last));
-        fpsEls.forEach((e) => (e.textContent = fps));
+      if (now - last >= 1000) {
+        const fps = String(Math.min(120, Math.round((frames * 1000) / (now - last))));
+        fpsEls.forEach((e) => { if (e.textContent !== fps) e.textContent = fps; });
         frames = 0; last = now;
       }
-      requestAnimationFrame(loop);
     };
-    requestAnimationFrame(loop);
+    if (window.gsap) gsap.ticker.add(count);
+    else { const loop = () => { count(); requestAnimationFrame(loop); }; requestAnimationFrame(loop); }
 
     const setLCP = (ms) => qsa(".js-lcp").forEach((e) => (e.textContent = (ms / 1000).toFixed(1) + "s"));
     try {
@@ -430,11 +432,25 @@
   }
 
   /* ---------- veil transitions ---------- */
+  // Browsers with cross-document View Transitions (Chrome/Edge 126+, Safari 18.2+) animate the page
+  // change natively from CSS (@view-transition in site.css), so navigation starts at once.
+  const NATIVE_VT = !!window.CSSViewTransitionRule;
   function navigate(href) {
     const sheet = qs(".veil__sheet");
-    if (REDUCED || !window.gsap) { location.href = href; return; }
+    store.set("vg-nav", "1", sessionStorage);
+    if (REDUCED || !window.gsap || NATIVE_VT) { location.href = href; return; }
     store.set("vg-veil", "1", sessionStorage);
-    gsap.fromTo(sheet, { yPercent: 104 }, { yPercent: 0, duration: 0.55, ease: "power3.inOut", onComplete: () => (location.href = href) });
+    gsap.fromTo(sheet, { yPercent: 104 }, { yPercent: 0, duration: 0.3, ease: "power2.in", onComplete: () => (location.href = href) });
+  }
+  /* Warm the HTTP cache for a page the visitor is about to open (hover, touch or keyboard focus). */
+  const warmed = new Set([location.pathname]);
+  function warm(e) {
+    const a = e.target.closest && e.target.closest("a[href]");
+    if (!a || a.target === "_blank") return;
+    const url = new URL(a.href, location.href);
+    if (url.origin !== location.origin || warmed.has(url.pathname)) return;
+    warmed.add(url.pathname);
+    fetch(url.pathname, { credentials: "same-origin", priority: "low" }).catch(() => {});
   }
   function initTransitions() {
     const sheet = qs(".veil__sheet");
@@ -442,11 +458,14 @@
       store.del("vg-veil", sessionStorage);
       gsap.set(sheet, { yPercent: 0 });
       html.classList.remove("is-entering");
-      gsap.to(sheet, { yPercent: -104, duration: 0.75, delay: 0.05, ease: "power3.inOut", onComplete: () => gsap.set(sheet, { yPercent: 104 }) });
+      gsap.to(sheet, { yPercent: -104, duration: 0.45, ease: "power2.out", onComplete: () => gsap.set(sheet, { yPercent: 104 }) });
     } else {
       html.classList.remove("is-entering");
       store.del("vg-veil", sessionStorage);
     }
+    D.addEventListener("pointerover", warm, { passive: true });
+    D.addEventListener("touchstart", warm, { passive: true });
+    D.addEventListener("focusin", warm);
     D.addEventListener("click", (e) => {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const a = e.target.closest("a[href]");
@@ -479,7 +498,7 @@
   /* ---------- smooth scroll + reveals ---------- */
   function useLenis() {
     if (REDUCED || !window.Lenis || V.lenis) return V.lenis;
-    V.lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+    V.lenis = new Lenis({ lerp: 0.14, smoothWheel: true });
     if (window.ScrollTrigger) V.lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add((t) => V.lenis.raf(t * 1000));
     gsap.ticker.lagSmoothing(0);
@@ -583,9 +602,9 @@
     const log = qs(".boot__log", el);
     const tl = gsap.timeline({ onComplete: done });
     gsap.set(qsa(".boot__big i", el), { yPercent: 110 });
-    lines.forEach((l, i) => tl.call(() => { log.insertAdjacentHTML("beforeend", (i ? "\n" : "") + l); sfx("key"); }, null, i * 0.11));
-    tl.to(qsa(".boot__big i", el), { yPercent: 0, duration: 0.8, ease: "power4.out", stagger: 0.08 }, 0.35);
-    tl.to(el, { yPercent: -100, duration: 0.85, ease: "power4.inOut" }, "+=0.45");
+    lines.forEach((l, i) => tl.call(() => { log.insertAdjacentHTML("beforeend", (i ? "\n" : "") + l); sfx("key"); }, null, i * 0.055));
+    tl.to(qsa(".boot__big i", el), { yPercent: 0, duration: 0.6, ease: "power4.out", stagger: 0.06 }, 0.18);
+    tl.to(el, { yPercent: -100, duration: 0.6, ease: "power4.inOut" }, "+=0.2");
     function done() { el.remove(); }
     const skip = () => { tl.progress(1); };
     el.addEventListener("click", skip);
@@ -621,7 +640,10 @@
     bootLog();
     if (PAGE === "lab-exp") labPager();
     D.dispatchEvent(new CustomEvent("vg:ready"));
-    if (window.gsap && !REDUCED) {
+    // The HUD and header only animate in on the first page of a visit, not on every click.
+    const arrived = store.get("vg-nav", sessionStorage);
+    store.del("vg-nav", sessionStorage);
+    if (window.gsap && !REDUCED && !arrived) {
       gsap.from(".hud__chip", { yPercent: -110, duration: 0.7, ease: "power3.out", stagger: 0.04, delay: 0.1 });
       gsap.from(".hdr > *", { y: -14, opacity: 0, duration: 0.8, ease: "power3.out", stagger: 0.06, delay: 0.15 });
     }

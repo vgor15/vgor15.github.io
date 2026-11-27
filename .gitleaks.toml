@@ -1,0 +1,9 @@
+# gitleaks: default rules, plus one value that is public on purpose.
+title = "vgor15.github.io"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "IndexNow key. It is public by design: search engines fetch it from https://vgor15.github.io/<key>.txt to confirm the site sent the ping."
+regexes = ['''4263b288c0d80406a6bed926c7695b75''']

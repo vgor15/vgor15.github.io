@@ -102,10 +102,22 @@
       return r.json();
     });
 
-  window.SITE_READY = Promise.all(FILES.map(load))
-    .then((list) => {
-      const c = {};
-      FILES.forEach((f, i) => (c[f] = list[i]));
+  /* The deploy build embeds all content files in each page as <script type="application/json" id="vg-content">,
+     so the live site needs no extra request. Without it (local preview) the files are fetched. */
+  const embedded = () => {
+    const el = document.getElementById("vg-content");
+    if (!el) return null;
+    try { return JSON.parse(el.textContent); } catch (e) { console.warn("[content] embedded copy unreadable, fetching", e); return null; }
+  };
+  const fetchAll = () => Promise.all(FILES.map(load)).then((list) => {
+    const c = {};
+    FILES.forEach((f, i) => (c[f] = list[i]));
+    return c;
+  });
+
+  const inline = embedded();
+  window.SITE_READY = (inline ? Promise.resolve(inline) : fetchAll())
+    .then((c) => {
       const S = build(c);
       window.SITE = S;
       return S;
