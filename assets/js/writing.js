@@ -7,14 +7,14 @@ document.addEventListener("vg:ready", () => {
   const book = qs(".book");
   qs(".writing__sr").innerHTML = posts.map((p) => `<li><a href="/writing/${p.slug}">${p.title} — ${p.excerpt}</a></li>`).join("");
   const pages = posts.map((p) => book.appendChild(make(`
-    <a class="book__pg" href="/writing/${p.slug}" aria-label="${p.title}">
-      <div class="book__top"><span>Writing · N°${p.n}</span><span>${p.read}</span></div>
+    <a class="book__pg" href="/writing/${p.slug}">
+      <div class="book__top" aria-hidden="true"><span>Writing · N°${p.n}</span><span>${p.read}</span></div>
       <div>
-        <div class="book__n">${p.n}</div>
+        <div class="book__n" aria-hidden="true">${p.n}</div>
         <div class="book__t">${p.title}</div>
         <div class="book__x">${p.excerpt}</div>
       </div>
-      <div class="book__bot"><span class="tag">${p.tag}</span><span>${p.date}</span></div>
+      <div class="book__bot" aria-hidden="true"><span class="tag">${p.tag}</span><span>${p.date}</span></div>
     </a>`)));
   pages.slice().reverse().forEach((p) => book.appendChild(p));
   const ordered = pages;
