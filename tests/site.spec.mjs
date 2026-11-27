@@ -37,8 +37,15 @@ for (const path of PAGES) {
     test("fits the screen (no sideways scrolling)", async ({ page }) => {
       await open(page, path);
       await page.waitForTimeout(500);
-      const { sw, w } = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, w: document.documentElement.clientWidth }));
-      expect(sw, `page is ${sw}px wide on a ${w}px screen`).toBeLessThanOrEqual(w + 1);
+      const { sw, w, culprits } = await page.evaluate(() => {
+        const w = document.documentElement.clientWidth;
+        const culprits = [...document.querySelectorAll("main *")]
+          .filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.right > w + 1 && getComputedStyle(e).position !== "fixed" && !e.closest(".home, [aria-hidden=true]"); })
+          .slice(0, 5)
+          .map((e) => `${e.tagName.toLowerCase()}.${String(e.className && e.className.baseVal !== undefined ? e.className.baseVal : e.className).split(" ")[0]} right=${Math.round(e.getBoundingClientRect().right)}`);
+        return { sw: document.documentElement.scrollWidth, w, culprits };
+      });
+      expect(sw, `page is ${sw}px wide on a ${w}px screen. Widest: ${culprits.join(", ")}`).toBeLessThanOrEqual(w + 1);
     });
 
     test("has no serious accessibility problems", async ({ page }, info) => {
@@ -76,7 +83,13 @@ for (const path of PAGES) {
           .filter((e) => vis(e) && parseFloat(getComputedStyle(e).fontSize) < 16).map((e) => e.className || e.tagName);
         const tiny = [...document.querySelectorAll("button, [role=button], select, .btn")]
           .filter((e) => vis(e) && !e.closest(".sr-only"))
-          .filter((e) => { const r = e.getBoundingClientRect(); return r.width < 24 || r.height < 24; })
+          .filter((e) => {
+            // The hit area counts, including an invisible ::after that enlarges small text buttons.
+            const r = e.getBoundingClientRect(), a = getComputedStyle(e, "::after");
+            const grow = a.content !== "none" && a.position === "absolute";
+            const W = Math.max(r.width, grow ? parseFloat(a.width) || 0 : 0), H = Math.max(r.height, grow ? parseFloat(a.height) || 0 : 0);
+            return W < 24 || H < 24;
+          })
           .map((e) => `${e.className || e.tagName} ${Math.round(e.getBoundingClientRect().width)}x${Math.round(e.getBoundingClientRect().height)}`);
         return { zoomy, tiny };
       });

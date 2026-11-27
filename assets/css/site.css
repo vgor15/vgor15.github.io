@@ -937,3 +937,10 @@ button.hud__chip:hover b { color: var(--gold-text); }
   .wtext { width: 240px; }
   .home__hint { display: none; }
 }
+/* Glyph Studio: tracks may never grow to fit a canvas's intrinsic size (WebKit measured them 6px wider) */
+.glyph-ed { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.slots { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+.slots button { min-width: 0; display: block; }
+.slots canvas { width: 100%; height: auto; aspect-ratio: 5 / 8; }
+.lcd { max-width: 100%; }
+.lcd canvas { max-width: 100%; }
