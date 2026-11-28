@@ -1,74 +1,78 @@
 {
-  "siteName": "Vyom Gor",
-  "locale": "en_IN",
-  "image": "/assets/img/og.png",
-  "imageAlt": "Vyom Gor, embedded software engineer: white and gold card with a CAN bus trace",
-  "googleVerification": "",
-  "bingVerification": "",
-  "pages": {
-    "/": {
-      "title": "Vyom Gor :: Embedded Software Engineer, Bengaluru",
-      "description": "Vyom Gor is an embedded software engineer in Bengaluru writing C and C++ close to the hardware: ARM7, CAN bus, I2C and Linux system programming."
-    },
-    "/about": {
-      "title": "About :: Vyom Gor, Embedded Software Engineer",
-      "description": "From Kutch to Bengaluru: how Vyom Gor went from a diploma and a 9.08 CGPA B.Tech to embedded Linux work at VVDN Technologies."
-    },
-    "/lab": {
-      "title": "Lab :: Interactive embedded experiments",
-      "description": "Browser experiments from an embedded engineer: a CAN bus simulator, an HD44780 glyph studio, a logic analyzer, a register flipper and a C shell."
-    },
-    "/writing": {
-      "title": "Writing :: Notes on embedded C, CAN and Linux",
-      "description": "Posts by Vyom Gor on embedded C, the CAN bus on the LPC2129, interrupts and volatile, pointers, and writing a Unix shell in C."
-    },
-    "/bench": {
-      "title": "Bench :: Experience and skills of Vyom Gor",
-      "description": "Experience, education, certificates and skills: VVDN Technologies, Vector India, ARM7 LPC2129, CAN 2.0B, I2C, SPI, UART, POSIX threads and systemd."
-    },
-    "/contact": {
-      "title": "Contact :: Write to Vyom Gor",
-      "description": "Write a letter to Vyom Gor about embedded software roles, collaborations or just to say hello, or book a 15-minute call."
-    },
-    "/resume": {
-      "title": "Resume :: Vyom Gor, Embedded Software Engineer",
-      "description": "Web resume of Vyom Gor: embedded C and C++, ARM7 LPC2129, CAN bus, I2C, SPI, UART and Linux system programming. Printable as a PDF."
-    },
-    "/now": {
-      "title": "Now :: What Vyom Gor is working on",
-      "description": "What Vyom Gor is building and learning right now in embedded Linux and C++, and what comes next."
-    },
-    "/notes": {
-      "title": "Notes :: Today I learned in C, ARM7 and Linux",
-      "description": "Short notes from the bench: volatile and ISRs, IOSET and IOCLR, CAN bit stuffing, HD44780 CGRAM, fork, strtok, getline and more."
-    },
-    "/changelog": {
-      "title": "Changelog :: What's new on Vyom Gor's site",
-      "description": "Everything new on the site, newest first: posts, lab experiments, work milestones and site updates."
-    },
-    "/lab/can-bus": {
-      "title": "CAN Bus Lab :: LPC2129 CAN simulator",
-      "description": "Drive a two-node CAN 2.0B network in the browser: flip switches on an LPC2129, watch frame 0x500 with CRC-15 and bit stuffing land on a 16x2 LCD."
-    },
-    "/lab/glyph-studio": {
-      "title": "Glyph Studio :: HD44780 custom character maker",
-      "description": "Draw 5x8 custom characters for an HD44780 16x2 LCD and copy the CGRAM byte array straight into your C code."
-    },
-    "/lab/logic-analyzer": {
-      "title": "Logic Analyzer :: UART, I2C and SPI decoder",
-      "description": "Type a byte and see it on the wire as UART, I2C or SPI waveforms, with every bit decoded. A browser logic analyzer for learning serial buses."
-    },
-    "/lab/register-flipper": {
-      "title": "Register Flipper :: LPC2129 GPIO register tool",
-      "description": "Flip LPC2129 port bits and get the IODIR, IOSET and IOCLR values and C lines for free. An interactive ARM7 GPIO register playground."
-    },
-    "/lab/led-matrix": {
-      "title": "LED Matrix :: Spring physics in the browser",
-      "description": "A grid of LEDs on one spring integration, pushed around by your cursor. Tune stiffness, damping, radius and force."
-    },
-    "/lab/shell": {
-      "title": "imperfect_cell :: A Unix shell in C, in the browser",
-      "description": "Try imperfect_cell, Vyom Gor's Unix-like shell written in C with fork, execvp and wait, rebuilt to run in the browser. Type help to start."
-    }
-  }
+    "siteName":  "Vyom Gor",
+    "locale":  "en_IN",
+    "image":  "/assets/img/og.png",
+    "imageAlt":  "Vyom Gor, embedded software engineer: white and gold card with a CAN bus trace",
+    "googleVerification":  "",
+    "bingVerification":  "",
+    "pages":  {
+                  "/":  {
+                            "title":  "Vyom Gor :: Embedded Software Engineer, Bengaluru",
+                            "description":  "Vyom Gor is an embedded software engineer in Bengaluru writing C and C++ close to the hardware: ARM7, CAN bus, I2C and Linux system programming."
+                        },
+                  "/about":  {
+                                 "title":  "About :: Vyom Gor, Embedded Software Engineer",
+                                 "description":  "From Kutch to Bengaluru: how Vyom Gor went from a diploma and a 9.08 CGPA B.Tech to embedded Linux work at VVDN Technologies."
+                             },
+                  "/lab":  {
+                               "title":  "Lab :: Interactive embedded experiments",
+                               "description":  "Browser experiments from an embedded engineer: a CAN bus simulator, an HD44780 glyph studio, a logic analyzer, a register flipper and a C shell."
+                           },
+                  "/writing":  {
+                                   "title":  "Writing :: Notes on embedded C, CAN and Linux",
+                                   "description":  "Posts by Vyom Gor on embedded C, the CAN bus on the LPC2129, interrupts and volatile, pointers, and writing a Unix shell in C."
+                               },
+                  "/bench":  {
+                                 "title":  "Bench :: Experience and skills of Vyom Gor",
+                                 "description":  "Experience, education, certificates and skills: VVDN Technologies, Vector India, ARM7 LPC2129, CAN 2.0B, I2C, SPI, UART, POSIX threads and systemd."
+                             },
+                  "/contact":  {
+                                   "title":  "Contact :: Write to Vyom Gor",
+                                   "description":  "Write a letter to Vyom Gor about embedded software roles, collaborations or just to say hello, or book a 15-minute call."
+                               },
+                  "/resume":  {
+                                  "title":  "Resume :: Vyom Gor, Embedded Software Engineer",
+                                  "description":  "Web resume of Vyom Gor: embedded C and C++, ARM7 LPC2129, CAN bus, I2C, SPI, UART and Linux system programming. Printable as a PDF."
+                              },
+                  "/now":  {
+                               "title":  "Now :: What Vyom Gor is working on",
+                               "description":  "What Vyom Gor is building and learning right now in embedded Linux and C++, and what comes next."
+                           },
+                  "/notes":  {
+                                 "title":  "Notes :: Today I learned in C, ARM7 and Linux",
+                                 "description":  "Short notes from the bench: volatile and ISRs, IOSET and IOCLR, CAN bit stuffing, HD44780 CGRAM, fork, strtok, getline and more."
+                             },
+                  "/changelog":  {
+                                     "title":  "Changelog :: What\u0027s new on Vyom Gor\u0027s site",
+                                     "description":  "Everything new on the site, newest first: posts, lab experiments, work milestones and site updates."
+                                 },
+                  "/lab/can-bus":  {
+                                       "title":  "CAN Bus Lab :: LPC2129 CAN simulator",
+                                       "description":  "Drive a two-node CAN 2.0B network in the browser: flip switches on an LPC2129, watch frame 0x500 with CRC-15 and bit stuffing land on a 16x2 LCD."
+                                   },
+                  "/lab/glyph-studio":  {
+                                            "title":  "Glyph Studio :: HD44780 custom character maker",
+                                            "description":  "Draw 5x8 custom characters for an HD44780 16x2 LCD and copy the CGRAM byte array straight into your C code."
+                                        },
+                  "/lab/logic-analyzer":  {
+                                              "title":  "Logic Analyzer :: UART, I2C and SPI decoder",
+                                              "description":  "Type a byte and see it on the wire as UART, I2C or SPI waveforms, with every bit decoded. A browser logic analyzer for learning serial buses."
+                                          },
+                  "/lab/register-flipper":  {
+                                                "title":  "Register Flipper :: LPC2129 GPIO register tool",
+                                                "description":  "Flip LPC2129 port bits and get the IODIR, IOSET and IOCLR values and C lines for free. An interactive ARM7 GPIO register playground."
+                                            },
+                  "/lab/led-matrix":  {
+                                          "title":  "LED Matrix :: Spring physics in the browser",
+                                          "description":  "A grid of LEDs on one spring integration, pushed around by your cursor. Tune stiffness, damping, radius and force."
+                                      },
+                  "/lab/shell":  {
+                                     "title":  "imperfect_cell :: A Unix shell in C, in the browser",
+                                     "description":  "Try imperfect_cell, Vyom Gor\u0027s Unix-like shell written in C with fork, execvp and wait, rebuilt to run in the browser. Type help to start."
+                                 },
+                  "/board":  {
+                                 "title":  "Board :: Drive this site from a CAN board",
+                                 "description":  "Drive Vyom Gor\u0027s portfolio from his 3D CAN dashboard board: flip the DIP switches to pick a page, turn the knob, press SEND and watch the LCD."
+                             }
+              }
 }
