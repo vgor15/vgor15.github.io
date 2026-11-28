@@ -20,7 +20,7 @@ async function open(page, path) {
   });
   await page.addInitScript(() => { try { sessionStorage.setItem("vg-booted", "1"); } catch (e) {} });
   const res = await page.goto(path);
-  await page.locator(".hdr").waitFor({ state: "attached" });
+  await page.locator("html[data-ready], .hdr").first().waitFor({ state: "attached" });
   return { res, problems };
 }
 
@@ -129,8 +129,10 @@ test.describe("job title switches by itself on 27 Feb 2027 (India time)", () => 
   for (const [when, expected] of [["2027-02-26T23:30:00+05:30", "Embedded Software Engineer (Trainee)"], ["2027-02-27T00:30:00+05:30", "Embedded Software Engineer"]]) {
     test(`on ${when}`, async ({ page }) => {
       await page.clock.setFixedTime(new Date(when));
-      await open(page, "/bench");
-      await expect(page.locator(".badge__role")).toHaveText(expected);
+      await open(page, "/?plain=1");
+      const lede = page.locator("#p-plaza .isl-lede");
+      await expect(lede).toContainText(expected);
+      if (!expected.includes("Trainee")) await expect(lede).not.toContainText("Trainee");
     });
   }
 });

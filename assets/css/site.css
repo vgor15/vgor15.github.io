@@ -1185,3 +1185,8 @@ html[data-theme="light"]:not(.plain) body[data-page] .page-lede { margin-bottom:
 .toy-home:hover { transform: translateY(-2px); }
 [data-page="home"] .toy-home, [data-page="board"] .toy-home { display: none; }
 @media print { .toy-home { display: none; } }
+
+/* Inside the island reader: the page alone, no site chrome. */
+html.embed .hud, html.embed .hdr, html.embed .toy-home, html.embed .info-btn, html.embed .mmenu, html.embed .cap, html.embed .skip, html.embed .js-plain { display: none !important; }
+html.embed body { --hud-h: 0px; --hdr-top: 0px; }
+html.embed main { padding-top: 24px !important; }

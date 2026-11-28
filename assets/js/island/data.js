@@ -21,6 +21,8 @@ export const ZONES = [
     npc: { name: "Vyom", at: [0, 2.2], voice: 420, look: { body: "#2d2a7a", skin: "#c98b62", hat: "none", hatColor: "#111", face: "smile", extra: "backpack" } } },
   { id: "post", name: "Post Office", icon: "📮", pos: [3, 26], r: 8, href: "/contact", color: "#ff3b3b",
     npc: { name: "Postie", at: [-2.4, 1.6], voice: 720, look: { body: "#ff3b3b", skin: "#ffd2a8", hat: "cap", hatColor: "#ffffff", face: "grin", extra: "backpack" } } },
+  { id: "library", name: "The Library", icon: "📚", pos: [12, -23], r: 8, href: "/writing", color: "#7b5cff",
+    npc: { name: "Page", at: [-2.2, 2.6], voice: 560, look: { body: "#7b5cff", skin: "#e8b48a", hat: "beanie", hatColor: "#ffd23f", face: "smile", extra: "scarf" } } },
 ];
 export const zone = (id) => ZONES.find((z) => z.id === id);
 
@@ -29,7 +31,7 @@ export const LINES = {
   intro: () => [
     { t: `Hey there! I'm VY-01, the little robot who looks after ${S().first || "Vyom"}'s island.` },
     { t: `${S().name || "Vyom Gor"} builds the tiny brains inside machines: the code that makes lights blink, buttons answer and cars talk to themselves.` },
-    { t: "Every building here is a piece of his story. Meet the folks, play the games and collect achievements along the way." },
+    { t: "Every building here is a piece of his story. Meet the folks, play the games, and keep an eye out for eight lost chips. They glow!" },
     { t: "Tap or click the ground to walk. On a keyboard, use W A S D or the arrow keys. Drag to turn the view." },
     { t: "But first, want to give yourself a fresh look?", choices: [{ label: "Maybe later", act: "skip" }, { label: "Let's do it!", act: "style" }] },
   ],
@@ -47,7 +49,7 @@ export const LINES = {
   ],
   busstop: () => [
     { t: "All aboard the CAN bus! In cars, tiny computers chat over a shared wire called a CAN bus. This one carries people instead." },
-    { t: "Vyom built a real one with two little circuit boards talking to each other. Fancy a ride around the island?", choices: [{ label: "Hop on!", act: "ride" }, { label: "Try the real demo", act: "go" }, { label: "Later", act: "close" }] },
+    { t: "Vyom built a real one with two little circuit boards talking to each other. Fancy a ride around the island?", choices: [{ label: "Hop on!", act: "ride" }, { label: "Play the real demo", act: "go" }, { label: "Later", act: "close" }] },
   ],
   arcade: () => [
     { t: "Player one has entered! These games are tiny, silly and a little bit nerdy." },
@@ -62,6 +64,11 @@ export const LINES = {
     { t: "Got something to say to Vyom? A job, a project, or just hello?" },
     { t: "Drop it in the big red box and I'll make sure it lands.", choices: [{ label: "Write to Vyom", act: "panel" }, { label: "Not now", act: "close" }] },
   ],
+  library: () => [
+    { t: "Welcome to the Library! Vyom writes short stories about what he learns at the bench: buses, shells, pointers and bugs." },
+    { t: "Grab something to read. The notes shelf has quick thoughts, and the logbook shows every change to this island.", choices: [{ label: "Notes and logbook", act: "panel:notes" }, { label: "Read his posts", act: "panel" }] },
+  ],
+  chips: () => [{ t: "Whoa, you found all eight lost chips! Every machine on the island is running at full power now. Thank you!" }],
   bus_done: () => [{ t: "Thanks for riding the CAN bus! Every stop delivered right on time." }],
   explorer: () => [{ t: "You've seen every corner of the island. VY-01 is officially impressed! Check your progress any time from the trophy button." }],
 };
@@ -78,6 +85,7 @@ export const ACH = [
   { id: "visit-arcade", icon: "🕹️", title: "Player one", text: "Visited the Arcade." },
   { id: "visit-house", icon: "🏡", title: "Knock knock", text: "Visited Vyom's House." },
   { id: "visit-post", icon: "📮", title: "You've got mail", text: "Visited the Post Office." },
+  { id: "visit-library", icon: "📚", title: "Bookworm", text: "Visited the Library." },
   { id: "explorer", icon: "🗺️", title: "Island explorer", text: "Visited every place on the island." },
   { id: "bus", icon: "🚌", title: "Bus rider", text: "Rode the CAN bus all the way round." },
   { id: "packets", icon: "📦", title: "Packet catcher", text: "Caught 15 packets in one game." },
@@ -87,6 +95,9 @@ export const ACH = [
   { id: "night", icon: "🌙", title: "Night owl", text: "Switched the island to night." },
   { id: "tower", icon: "📶", title: "Signal boost", text: "Tapped the signal tower five times." },
   { id: "letter", icon: "✉️", title: "Pen pal", text: "Opened the way to write to Vyom." },
+  { id: "chip", icon: "💾", title: "Shiny!", text: "Picked up a lost chip." },
+  { id: "chips", icon: "🧩", title: "Chip collector", text: "Found all eight lost chips." },
+  { id: "reader", icon: "📖", title: "Deep diver", text: "Read a post or played a lab toy." },
 ];
 
 /* Looks for the avatar maker. */

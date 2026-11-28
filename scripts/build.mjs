@@ -17,10 +17,11 @@ const CONTENT = ["site", "work", "about", "bench", "lab", "writing", "changelog"
 
 // Only these top-level entries are published. Anything new must be added here on purpose.
 const PUBLISH = [
-  ".nojekyll", ".well-known", "404.html", "about.html", "admin", "assets", "bench.html", "changelog.html",
-  "contact.html", "content", "index.html", "lab", "lab.html", "notes.html", "now.html", "record.html",
-  "resume.html", "robots.txt", "writing", "writing.html", "favicon.ico", "board.html", "work.html", "machine.html",
+  ".nojekyll", ".well-known", "404.html", "admin", "assets", "content", "index.html", "lab", "record.html",
+  "resume.html", "robots.txt", "writing", "favicon.ico", "board.html",
 ];
+// Every section URL is the island itself, opened at its place (the island page is index.html).
+const ISLAND = { about: "house", bench: "house", work: "workshop", machine: "garden", contact: "post", now: "plaza", notes: "library", changelog: "library", writing: "library", lab: "arcade" };
 
 const readJson = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf8"));
 async function* walk(dir) {
@@ -54,6 +55,9 @@ async function main() {
       filter: (src) => !/(^|[\\/])(\.DS_Store|Thumbs\.db|\.gitkeep|zz-[^\\/]*)$/.test(src),
     });
   }
+
+  const shell = await readFile(join(OUT, "index.html"), "utf8");
+  for (const [name, zone] of Object.entries(ISLAND)) await writeFile(join(OUT, `${name}.html`), shell.replace('<body data-page="home">', `<body data-page="home" data-zone="${zone}">`));
 
   /* ---------- content ---------- */
   const raw = {};
