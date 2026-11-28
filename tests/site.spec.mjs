@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 const PAGES = [
-  "/", "/about", "/lab", "/writing", "/bench", "/contact", "/record", "/changelog", "/resume", "/now", "/notes", "/board",
+  "/", "/about", "/lab", "/writing", "/bench", "/contact", "/record", "/changelog", "/resume", "/now", "/notes", "/board", "/work", "/machine",
   "/lab/can-bus", "/lab/glyph-studio", "/lab/logic-analyzer", "/lab/register-flipper", "/lab/led-matrix", "/lab/shell",
   "/writing/two-ecus-one-bus", "/writing/a-shell-is-a-loop", "/writing/the-flag-that-never-changed", "/writing/pointers-at-the-lab-bench",
 ];
