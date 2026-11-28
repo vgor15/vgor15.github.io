@@ -11,7 +11,7 @@ document.addEventListener("vg:ready", () => {
   const NS = "http://www.w3.org/2000/svg";
   const pref = { get() { try { return localStorage.getItem("vg-home-view"); } catch (e) { return null; } }, set(v) { try { localStorage.setItem("vg-home-view", v); } catch (e) {} } };
 
-  const seg = V.make(`<div class="viewseg" role="group" aria-label="Home view"><button type="button" data-v="wheel" aria-pressed="true">Wheel</button><button type="button" data-v="schematic" aria-pressed="false">Circuit</button></div>`);
+  const seg = V.make(`<div class="viewseg" role="group" aria-label="Home view"><button type="button" data-v="core" aria-pressed="true">Core</button><button type="button" data-v="wheel" aria-pressed="false">Wheel</button><button type="button" data-v="schematic" aria-pressed="false">Circuit</button></div>`);
   D.body.append(seg);
   const wrap = V.make(`<section class="sch" aria-label="Site schematic: click a part to open that page"></section>`);
   V.qs("main").append(wrap);
@@ -124,6 +124,8 @@ document.addEventListener("vg:ready", () => {
   const set = (v, save) => {
     const sch = v === "schematic";
     html.classList.toggle("view-schematic", sch);
+    html.classList.toggle("view-core", v === "core");
+    html.classList.toggle("view-wheel", v === "wheel");
     seg.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === v)));
     if (sch && !svg) build();
     if (save) pref.set(v);
@@ -133,5 +135,21 @@ document.addEventListener("vg:ready", () => {
   let rT, lastPortrait = innerWidth < innerHeight * 0.95;
   addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(() => { const p = innerWidth < innerHeight * 0.95; if (svg && p !== lastPortrait) { lastPortrait = p; build(); } }, 200); });
   addEventListener("pageshow", (e) => { if (e.persisted) { busy = false; wrap.style.opacity = ""; if (svg) svg.setAttribute("viewBox", `${vb.x} ${vb.y} ${vb.w} ${vb.h}`); } });
-  set(pref.get() === "schematic" ? "schematic" : "wheel", false);
+  /* SIGNAL hero: live text from the content files, and a one-time decode of the name */
+  const fill = (sel, v) => { const e = V.qs(sel); if (e && v) e.textContent = v; };
+  fill(".js-sig-role", S.title); fill(".js-sig-status", S.status); fill(".js-sig-tag", S.tagline);
+  if (!V.REDUCED) {
+    const GLYPH = "01<>/{}#$%&@VYOMGR";
+    V.qsa(".signal__name span").forEach((el, k) => {
+      const final = el.textContent; let f = 0;
+      const tick = () => {
+        el.textContent = [...final].map((c, i) => (i < f / 3 - k * 2 ? c : GLYPH[(Math.random() * GLYPH.length) | 0])).join("");
+        if (++f < (final.length + k * 2) * 3 + 6) setTimeout(tick, 40); else el.textContent = final;
+      };
+      tick();
+    });
+  }
+
+  const saved = pref.get();
+  set(saved === "schematic" || saved === "wheel" ? saved : "core", false);
 });

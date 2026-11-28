@@ -1105,3 +1105,16 @@ html.view-schematic .home, html.view-schematic .home__hint, html.view-schematic 
 .world.is-on { opacity: 1; }
 html.plain .world { display: none; }
 .js-plain[aria-pressed="true"] { color: var(--gold-text); }
+
+/* SIGNAL home hero (Phase 2): real text over the living core */
+.signal { position: fixed; left: var(--gutter); top: 50%; transform: translateY(-46%); z-index: 3; max-width: min(620px, 92vw); display: grid; gap: 14px; }
+html.view-wheel .signal, html.view-schematic .signal { display: none; }
+html.view-core .home, html.view-core .home__hint, html.view-core .home__intro { display: none; }
+.signal__eyebrow { display: flex; align-items: center; gap: 8px; color: var(--gold-text); }
+.signal__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ember); box-shadow: 0 0 12px var(--ember); animation: blink 1.6s steps(2) infinite; }
+.signal__name { font: 800 clamp(64px, 12vw, 168px)/.84 var(--display); letter-spacing: -0.06em; display: grid; color: var(--ink); text-shadow: 0 0 40px #3ef2ff30; }
+.signal__name span:last-child { color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+.signal__role { font: 600 18px var(--sans); letter-spacing: -0.01em; }
+.signal__tag { color: var(--ink-muted); max-width: 40ch; }
+.signal__cta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+@media (max-width: 700px) { .signal { top: auto; bottom: calc(80px + var(--sa-b)); transform: none; right: var(--gutter); } .signal__name { font-size: clamp(54px, 17vw, 96px); } }

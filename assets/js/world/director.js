@@ -3,6 +3,7 @@
    SIGNAL (home), VAULT (/work), MACHINE (/machine) and TRANSMISSION (/contact). */
 const SCENES = {
   default: () => import("./scenes/void.js").then((m) => m.voidScene),
+  home: () => import("./scenes/signal.js").then((m) => m.signalScene),
 };
 // pages that already run their own full-screen canvas keep the stage to themselves
 const SKIP = new Set(["board", "contact"]);
