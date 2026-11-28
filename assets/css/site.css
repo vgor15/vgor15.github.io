@@ -1118,3 +1118,7 @@ html.view-core .home, html.view-core .home__hint, html.view-core .home__intro { 
 .signal__tag { color: var(--ink-muted); max-width: 40ch; }
 .signal__cta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 @media (max-width: 700px) { .signal { top: auto; bottom: calc(80px + var(--sa-b)); transform: none; right: var(--gutter); } .signal__name { font-size: clamp(54px, 17vw, 96px); } }
+
+/* Phase 3: let the worlds breathe through the pages */
+[data-theme="dark"] .now-card { background: color-mix(in srgb, var(--surface) 62%, transparent); -webkit-backdrop-filter: blur(8px) saturate(1.3); backdrop-filter: blur(8px) saturate(1.3); }
+html:not(.plain) body[data-page="work"] .page-lede, html:not(.plain) body[data-page="machine"] .page-lede { margin-bottom: min(42vh, 420px); }

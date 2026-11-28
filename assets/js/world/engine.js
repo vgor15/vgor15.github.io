@@ -15,7 +15,7 @@ export function createEngine() {
   renderer.setPixelRatio(gov.dpr);
   const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 400);
   camera.position.set(0, 0, 30);
-  const state = { pointer: { x: 0, y: 0 }, scroll: 0, time: 0 };
+  const state = { pointer: { x: 0, y: 0 }, scroll: 0, time: 0, dive: 0 };
   let scene = null, raf = 0, last = 0, running = false;
 
   const resize = () => { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / Math.max(1, h); camera.updateProjectionMatrix(); scene && scene.resize && scene.resize(w, h); };
@@ -26,6 +26,7 @@ export function createEngine() {
   const frame = (now) => {
     const dt = Math.min(0.05, (now - last) / 1000 || 0.016); last = now; state.time += dt;
     gov.frame(dt);
+    if (state.dive) { const k = Math.min(1, (now - state.dive) / 420), e = k * k * (3 - 2 * k); camera.fov = 55 - 38 * e; camera.updateProjectionMatrix(); canvas.style.filter = `brightness(${1 + e * 1.6}) blur(${e * 2}px)`; }
     if (scene) { scene.update(dt, state); renderer.render(scene.root, camera); }
     if (running) raf = requestAnimationFrame(frame);
   };
