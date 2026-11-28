@@ -59,11 +59,11 @@ document.addEventListener("vg:ready", () => {
         bricks.delete(key); V.sfx && V.sfx("key");
         const fx = ball.x - (cx + 0.5), fy = ball.y - (cy + 0.5);
         if (Math.abs(fx) > Math.abs(fy)) ball.vx *= -1; else ball.vy *= -1;
-        if (!bricks.size) { state = "won"; say("Bus recovered. Taking you home…"); V.sfx && V.sfx("relay"); setTimeout(() => V.navigate("/"), 1600); return; }
+        if (!bricks.size) { state = "won"; say("You did it! Taking you home…"); V.sfx && V.sfx("relay"); setTimeout(() => V.navigate("/"), 1600); return; }
       }
       if (ball.y > ROWS + 0.5) {
         lives--;
-        if (lives <= 0) { state = "over"; say("Bus off. Tap or press Space to try again."); ball.stuck = true; return; }
+        if (lives <= 0) { state = "over"; say("Game over. Tap or press Space to try again."); ball.stuck = true; return; }
         reset(false); say(`${lives} ${lives === 1 ? "life" : "lives"} left. Tap to launch.`); return;
       }
     }

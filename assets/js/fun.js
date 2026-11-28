@@ -163,13 +163,13 @@
       if (isOpen && !paused) raf = requestAnimationFrame(draw);
     };
     const build = () => {
-      drawer = V.make(`<section class="cap" aria-label="CAN capture of your visit" hidden>
+      drawer = V.make(`<section class="cap" aria-label="Your visit as signals" hidden>
         <div class="cap__bar">
-          <div class="cap__title"><b>CAN capture · your visit</b><span><span class="js-cap-n">0</span> frames · 11-bit IDs · CRC-15 · stuff bits in gold</span></div>
+          <div class="cap__title"><b>Your visit, as signals on a wire</b><span><span class="js-cap-n">0</span> messages so far</span></div>
           <div class="cap__btns"><button class="btn js-cap-pause" type="button" aria-pressed="false">Pause</button><button class="btn js-cap-dl" type="button">Download .log</button><button class="btn js-cap-x" type="button" aria-label="Close capture">Close</button></div>
         </div>
         <div class="cap__body"><canvas class="cap__scope" aria-hidden="true"></canvas><ol class="cap__log" aria-label="Frames, newest first"></ol></div>
-        <p class="cap__note">Every hover, click, scroll and key press here is sent as a real CAN frame. Lower ID wins the bus, so clicks (0x0A0) beat hovers (0x3A0). It all stays in your browser.</p>
+        <p class="cap__note">Everything you do here turns into a tiny message on a wire, the way the parts of a car talk to each other. Clicks jump the queue. It all stays on your device.</p>
       </section>`);
       D.body.append(drawer);
       cv = V.qs(".cap__scope", drawer); g = cv.getContext("2d"); logEl = V.qs(".cap__log", drawer); nEl = V.qs(".js-cap-n", drawer);
@@ -181,7 +181,7 @@
         const t0 = cap.t0 / 1000;
         const text = cap.frames.map((f) => `(${(t0 + f.t).toFixed(6)}) vgor0 ${f.id.toString(16).toUpperCase().padStart(3, "0")}#${f.data.map((b) => b.toString(16).toUpperCase().padStart(2, "0")).join("")} ; ${f.note}`).join("\n") + "\n";
         const a = D.createElement("a"); a.href = URL.createObjectURL(new Blob([text], { type: "text/plain" })); a.download = "vyom-visit.log"; D.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
-        V.toast("Capture saved", "vyom-visit.log, in candump format");
+        V.toast("Saved", "vyom-visit.log is in your downloads.");
       });
     };
     const toggle = (on) => {
@@ -199,7 +199,7 @@
     D.addEventListener("keydown", (e) => { if (e.key === "Escape" && isOpen) toggle(false); });
     // phones: the BUS:: chip is hidden in the compact HUD, so the mobile menu gets a button
     const row = V.qs(".mmenu__row");
-    if (row) { const b = V.make(`<button class="btn js-bus" type="button" aria-expanded="false">CAN capture</button>`); row.append(b); }
+    if (row) { const b = V.make(`<button class="btn js-bus" type="button" aria-expanded="false">Your signals</button>`); row.append(b); }
   }
 
   /* ---------------- breadboard menu ---------------- */
@@ -369,11 +369,11 @@
     const F = [
       ["Off the bench", "Anime, games, swimming, hiking, and hunting the next good food spot."],
       ["Kutch → Ahmedabad → Bengaluru", "Diploma, then a 9.08 CGPA B.Tech, then embedded Linux in Bengaluru."],
-      ["Hand-drawn pixels", "The CAN dashboard's LCD arrows are custom CGRAM glyphs, drawn one 5×8 pixel at a time."],
-      ["Press ` anywhere", "It opens imperfect_cell, his C shell, rebuilt for the browser. Try exit."],
-      ["You're on the bus", "Every hover and click here is a CAN frame. Tap BUS:: to watch your own traffic."],
+      ["Hand-drawn pixels", "The little arrows on his dashboard screen were drawn by hand, one tiny dot at a time."],
+      ["Press ` anywhere", "A tiny terminal pops up. Type help, then try exit."],
+      ["You are on the wire", "Tap BUS:: at the top to watch everything you do turn into signals."],
       ["There's a secret", "Gamers know the code. On a phone, tap the clock five times."],
-      ["Lowest ID wins", "On CAN, a 0 bit overpowers a 1, so the frame with the smallest ID always gets the bus."],
+      ["Lost? Good.", "Type any wrong address on this site and you get a game instead of an error."],
       ["Breadboard menu", "Tap the wire icon at the top and plug yourself into a page."],
     ];
     let k = +(ss.get("vg-fact") || 0);

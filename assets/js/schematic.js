@@ -11,7 +11,7 @@ document.addEventListener("vg:ready", () => {
   const NS = "http://www.w3.org/2000/svg";
   const pref = { get() { try { return localStorage.getItem("vg-home-view"); } catch (e) { return null; } }, set(v) { try { localStorage.setItem("vg-home-view", v); } catch (e) {} } };
 
-  const seg = V.make(`<div class="viewseg" role="group" aria-label="Home view"><button type="button" data-v="wheel" aria-pressed="true">Wheel</button><button type="button" data-v="schematic" aria-pressed="false">Schematic</button></div>`);
+  const seg = V.make(`<div class="viewseg" role="group" aria-label="Home view"><button type="button" data-v="wheel" aria-pressed="true">Wheel</button><button type="button" data-v="schematic" aria-pressed="false">Circuit</button></div>`);
   D.body.append(seg);
   const wrap = V.make(`<section class="sch" aria-label="Site schematic: click a part to open that page"></section>`);
   V.qs("main").append(wrap);
@@ -59,7 +59,7 @@ document.addEventListener("vg:ready", () => {
     el("path", { d: `M${U.x + U.w / 2 - 16} ${U.y}a16 16 0 0 0 32 0`, class: "sch__ln" }, mcu);
     text(mcu, U.x + 16, U.y - 12, "U1", "sch__ref", "start");
     text(mcu, U.x + U.w / 2, U.y + U.h / 2 - 18, S.first ? S.first.toUpperCase() : "VYOM", "sch__big");
-    text(mcu, U.x + U.w / 2, U.y + U.h / 2 + 14, "LPC2129 · ARM7 · " + (S.city || "").toUpperCase(), "sch__val");
+    text(mcu, U.x + U.w / 2, U.y + U.h / 2 + 14, "THAT IS ME · " + (S.city || "").toUpperCase(), "sch__val");
     text(mcu, U.x + U.w / 2, U.y + U.h / 2 + 40, "VDD 3V3 · coffee-powered", "sch__val sch__dim");
     const sides = { L: PARTS.filter((p) => p.side === "L"), R: PARTS.filter((p) => p.side === "R"), T: PARTS.filter((p) => p.side === "T") };
     const place = (p, i, count) => {

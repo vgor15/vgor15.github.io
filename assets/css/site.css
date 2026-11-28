@@ -1074,3 +1074,4 @@ html.view-schematic .home, html.view-schematic .home__hint, html.view-schematic 
 .dip { flex: 1; min-height: 44px; border-radius: 6px; background: var(--fill); font: 500 11px var(--mono); display: grid; place-items: center; }
 .dip[aria-pressed="true"] { background: #2a4fb5; color: #fff; }
 .boardpg__help { font-size: 12.5px; color: var(--ink-muted); }
+.sch__pin { display: none; }

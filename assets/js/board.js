@@ -14,16 +14,16 @@ document.addEventListener("vg:ready", () => {
   let onChange = () => {};
   const render = () => {
     const p = PAGES[code];
-    l1.textContent = p ? `> ${p[0]}` : code === 0 ? "> IDLE" : "> NO NODE";
-    l2.textContent = `SW ${bin(code)} · ${p ? p[1] : "pick 1–10"}`;
+    l1.textContent = p ? `> ${p[0]}` : code === 0 ? "> ALL OFF" : "> EMPTY";
+    l2.textContent = `SW ${bin(code)} · ${p ? p[1] : "try another"}`;
     dips.forEach((b) => b.setAttribute("aria-pressed", String(!!(code & (1 << +b.dataset.bit)))));
     onChange();
   };
   const flip = (bit) => { code ^= 1 << bit; V.sfx && V.sfx("click"); render(); };
   const turn = (dir) => { const i = codes.indexOf(code); code = i < 0 ? codes[0] : codes[(i + dir + codes.length) % codes.length]; V.sfx && V.sfx("tick"); render(); };
   const send = () => {
-    const p = PAGES[code]; if (!p || sending) { V.toast && V.toast("No node at " + bin(code), "Set the switches to 1–10 first."); return; }
-    sending = true; l1.textContent = "TX 0x500 ..."; l2.textContent = "ACK · " + p[1]; V.sfx && V.sfx("relay");
+    const p = PAGES[code]; if (!p || sending) { V.toast && V.toast("Nothing there", "Try another switch combination."); return; }
+    sending = true; l1.textContent = "> SENDING..."; l2.textContent = "OK · going to " + p[0]; V.sfx && V.sfx("relay");
     setTimeout(() => V.navigate(p[1]), 650);
   };
   dips.forEach((b) => b.addEventListener("click", () => flip(+b.dataset.bit)));
