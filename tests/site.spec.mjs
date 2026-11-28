@@ -60,7 +60,8 @@ for (const path of PAGES) {
       expect(bad).toEqual([]);
     });
 
-    test("security basics are in place", async ({ page, request }) => {
+    test("security basics are in place", async ({ page, request }, info) => {
+      test.skip(info.project.name !== "desktop", "page source is the same on every device: checked once on desktop");
       const html = await (await request.get(path)).text();
       expect(html).toContain('http-equiv="Content-Security-Policy"');
       expect(html).toContain("object-src 'none'");
@@ -98,6 +99,9 @@ for (const path of PAGES) {
     });
   });
 }
+
+test.describe("site-wide checks", () => {
+test.beforeEach(async ({}, info) => { test.skip(info.project.name !== "desktop", "the same on every device: checked once on desktop"); });
 
 test("unknown pages get the 404 page with a 404 status", async ({ page }) => {
   const res = await page.goto("/this-page-does-not-exist");
@@ -155,4 +159,5 @@ test("content files never contain a plain email address", async ({ request }) =>
     const text = await (await request.get(`/content/${f}.json`)).text();
     expect(text, `content/${f}.json`).not.toMatch(EMAIL);
   }
+});
 });

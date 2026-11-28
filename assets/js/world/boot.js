@@ -39,3 +39,16 @@ function toggleButton() {
 const start = () => { toggleButton(); const go = () => on(); ("requestIdleCallback" in window) ? requestIdleCallback(go, { timeout: 1200 }) : setTimeout(go, 400); };
 if (window.SITE && document.querySelector(".hdr")) start(); else document.addEventListener("vg:ready", start, { once: true });
 document.addEventListener("vg:theme", (e) => (e.detail && e.detail.dark ? on() : off()));
+
+/* Dive: leaving for another page inside the site makes the world rush forward.
+   Navigation itself is untouched (core.js / View Transitions handle it). */
+document.addEventListener("click", (e) => {
+  if (!engine) return;
+  const a = e.target.closest && e.target.closest("a[href]");
+  if (!a || a.target === "_blank" || e.metaKey || e.ctrlKey || e.shiftKey) return;
+  const url = new URL(a.href, location.href);
+  if (url.origin !== location.origin || url.pathname === location.pathname) return;
+  engine.state.dive = performance.now();
+  engine.start();
+}, true);
+addEventListener("pageshow", (e) => { if (e.persisted && engine) { engine.state.dive = 0; engine.camera.fov = 55; engine.camera.updateProjectionMatrix(); engine.canvas.style.filter = ""; } });

@@ -50,12 +50,22 @@ jobs:
       - run: npm install --no-audit --no-fund --ignore-scripts html-validate@11.23.0
       - run: npx --no-install html-validate "*.html" "lab/*.html" "writing/*.html" "admin/*.html"
 
-  test:
-    name: Browser tests (desktop, iPhone, iPad)
+  test-device:
+    name: Browser tests (${{ matrix.project }})
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 25
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: desktop
+            browser: chromium
+          - project: iphone
+            browser: webkit
+          - project: ipad
+            browser: webkit
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -64,15 +74,27 @@ jobs:
         with:
           node-version: 22
       - run: npm install --no-audit --no-fund --ignore-scripts
-      - run: npx --no-install playwright install --with-deps chromium webkit
-      - run: npx --no-install playwright test
+      - run: npx --no-install playwright install --with-deps ${{ matrix.browser }}
+      - run: npx --no-install playwright test --project=${{ matrix.project }}
       - name: Upload report and screenshots
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.project }}
           path: playwright-report/
           retention-days: 14
+
+  # One summary check with the old name, so branch protection keeps working.
+  test:
+    name: Browser tests (desktop, iPhone, iPad)
+    needs: test-device
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - run: |
+          echo "Device results: ${{ needs.test-device.result }}"
+          [ "${{ needs.test-device.result }}" = "success" ]
 
   lighthouse:
     name: Lighthouse budgets
