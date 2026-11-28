@@ -5,7 +5,7 @@ test.beforeEach(async ({}, info) => { test.skip(info.project.name !== "desktop",
 
 const SITE = "https://vgor15.github.io";
 const INDEXED = [
-  "/", "/about", "/lab", "/writing", "/bench", "/contact", "/resume", "/now", "/notes", "/changelog", "/board",
+  "/", "/about", "/lab", "/writing", "/bench", "/contact", "/resume", "/now", "/notes", "/changelog", "/board", "/work", "/machine",
   "/lab/can-bus", "/lab/glyph-studio", "/lab/logic-analyzer", "/lab/register-flipper", "/lab/led-matrix", "/lab/shell",
   "/writing/two-ecus-one-bus", "/writing/a-shell-is-a-loop", "/writing/the-flag-that-never-changed", "/writing/pointers-at-the-lab-bench",
 ];

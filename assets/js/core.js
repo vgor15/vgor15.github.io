@@ -46,7 +46,7 @@
 
   /* ---------- small helpers ---------- */
   const email = () => String.fromCharCode(...S.mail.u) + "@" + String.fromCharCode(...S.mail.d);
-  const pageLabel = { home: null, about: "About", lab: "Lab", "lab-exp": "Lab", writing: "Writing", post: "Writing", bench: "Bench", contact: "Contact", record: "Record", changelog: "Log", notfound: "404", resume: "Resume", now: "Now", notes: "Notes" };
+  const pageLabel = { home: null, work: "Work", machine: "Machine", board: "Board", about: "About", lab: "Lab", "lab-exp": "Lab", writing: "Writing", post: "Writing", bench: "Bench", contact: "Contact", record: "Record", changelog: "Log", notfound: "404", resume: "Resume", now: "Now", notes: "Notes" };
 
   /* ============================================================
      CHROME
@@ -172,7 +172,7 @@
   }
   function setTheme(pref) { store.set("vg-theme", pref); applyTheme(pref); }
   function initTheme() {
-    applyTheme(html.getAttribute("data-pref") || "light");
+    applyTheme(html.getAttribute("data-pref") || "dark");
     D.addEventListener("click", (e) => {
       const b = e.target.closest("[data-theme-set]");
       if (b) setTheme(b.dataset.themeSet);

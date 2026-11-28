@@ -1,13 +1,19 @@
 /* ============================================================
    VYOM GOR — site.css
-   White + gold. Layout and motion language inspired by
-   carterogunsola.com; all code here is original.
+   VYOM.EXE · The Living Machine. Void black, bio-cyan, synapse
+   violet, rare ember amber. Dark is the default; light remains.
    ============================================================ */
 
 @font-face {
   font-family: "Geist";
   src: url("/assets/fonts/Geist-Variable.woff2") format("woff2");
   font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unbounded";
+  src: url("/assets/fonts/Unbounded-Variable.woff2") format("woff2");
+  font-weight: 200 900;
   font-display: swap;
 }
 @font-face {
@@ -30,10 +36,11 @@
   --line: #1e1e1e12;
   --divider: #1e1e1e29;
   --chip: #e4e1d8;
-  --gold: #a5802a;
-  --gold-soft: #d9bc72;
-  --gold-text: #7d5f1a; /* gold for small text: 5.3:1 on paper (AA) */
-  --gold-wash: #a5802a1a;
+  --gold: #5b3df0;      /* the accent (historic name): synapse violet on paper */
+  --gold-soft: #9a7dff;
+  --gold-text: #4f2fd8; /* small-text accent, AA on paper */
+  --gold-wash: #5b3df01a;
+  --ember: #c26a00;
   --panel: #1c1b19;
   --panel-ink: #ebe7dd;
   --panel-muted: #ebe7dd99;
@@ -46,23 +53,24 @@
 }
 
 [data-theme="dark"] {
-  --paper: #151412;
-  --surface: #201f1c;
-  --card: #1b1a18;
-  --ink: #eeebe3;
-  --ink-muted: #eeebe3b3;
-  --ink-faint: #eeebe38c;
-  --fill: #eeebe314;
-  --fill-strong: #eeebe32e;
-  --line: #eeebe314;
-  --divider: #eeebe32b;
-  --chip: #2a2926;
-  --gold: #d9bc72;
-  --gold-soft: #e8d29a;
-  --gold-text: #d9bc72;
-  --gold-wash: #d9bc721f;
-  --panel: #0d0c0b;
-  --panel-ink: #ebe7dd;
+  --paper: #05050a;     /* void */
+  --surface: #0d0d16;
+  --card: #0a0a12;
+  --ink: #e9ecf2;       /* bone */
+  --ink-muted: #e9ecf2b8;
+  --ink-faint: #e9ecf290;
+  --fill: #e9ecf212;
+  --fill-strong: #e9ecf22b;
+  --line: #e9ecf214;
+  --divider: #e9ecf22b;
+  --chip: #141422;
+  --gold: #3ef2ff;      /* bio-cyan */
+  --gold-soft: #a98bff; /* synapse violet */
+  --gold-text: #3ef2ff;
+  --gold-wash: #3ef2ff1a;
+  --ember: #ffb547;     /* rare highlights only */
+  --panel: #030306;
+  --panel-ink: #e9ecf2;
   --panel-muted: #ebe7dd99;
   --scrim: #00000070;
   --shadow-control: 0 0 0 1px #ffffff12, 0 2px 6px -2px #00000080;
@@ -75,6 +83,7 @@
 :root {
   --sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --display: "Unbounded", "Geist", -apple-system, "Segoe UI", sans-serif;
   --ease: cubic-bezier(0.65, 0.05, 0, 1);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --sa-t: env(safe-area-inset-top, 0px);
@@ -1075,3 +1084,37 @@ html.view-schematic .home, html.view-schematic .home__hint, html.view-schematic 
 .dip[aria-pressed="true"] { background: #2a4fb5; color: #fff; }
 .boardpg__help { font-size: 12.5px; color: var(--ink-muted); }
 .sch__pin { display: none; }
+
+/* ============================================================
+   VYOM.EXE identity layer (Phase 1)
+   ============================================================ */
+.h-page, .exp__meta h1, .wtext__t, .sch__big, .boot__big, .post h1 { font-family: var(--display); font-weight: 700; letter-spacing: -0.045em; }
+.h-page { font-size: clamp(34px, 6.2vw, 84px); line-height: 1; }
+.exp__meta h1 { font-size: clamp(30px, 4.4vw, 58px); }
+.wtext__t { font-size: 26px; }
+[data-theme="dark"] ::selection { background: var(--gold); color: #03030a; }
+[data-theme="dark"] .h-page, [data-theme="dark"] .exp__meta h1 { color: #f2f4f8; text-shadow: 0 0 28px #3ef2ff33, 0 0 60px #8b5cff22; }
+[data-theme="dark"] .hud__chip b, [data-theme="dark"] .label { text-shadow: 0 0 12px #3ef2ff22; }
+/* instrument-bezel corner ticks for framed panels */
+.bezel { position: relative; }
+.bezel::before, .bezel::after { content: ""; position: absolute; width: 10px; height: 10px; border: 1px solid var(--gold); pointer-events: none; opacity: .7; }
+.bezel::before { left: -1px; top: -1px; border-right: 0; border-bottom: 0; }
+.bezel::after { right: -1px; bottom: -1px; border-left: 0; border-top: 0; }
+/* the world canvas sits behind all content */
+.world { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; display: block; opacity: 0; transition: opacity 1.2s ease; }
+.world.is-on { opacity: 1; }
+html.plain .world { display: none; }
+.js-plain[aria-pressed="true"] { color: var(--gold-text); }
+
+/* SIGNAL home hero (Phase 2): real text over the living core */
+.signal { position: fixed; left: var(--gutter); top: 50%; transform: translateY(-46%); z-index: 3; max-width: min(620px, 92vw); display: grid; gap: 14px; }
+html.view-wheel .signal, html.view-schematic .signal { display: none; }
+html.view-core .home, html.view-core .home__hint, html.view-core .home__intro { display: none; }
+.signal__eyebrow { display: flex; align-items: center; gap: 8px; color: var(--gold-text); }
+.signal__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ember); box-shadow: 0 0 12px var(--ember); animation: blink 1.6s steps(2) infinite; }
+.signal__name { font: 800 clamp(64px, 12vw, 168px)/.84 var(--display); letter-spacing: -0.06em; display: grid; color: var(--ink); text-shadow: 0 0 40px #3ef2ff30; }
+.signal__name span:last-child { color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+.signal__role { font: 600 18px var(--sans); letter-spacing: -0.01em; }
+.signal__tag { color: var(--ink-muted); max-width: 40ch; }
+.signal__cta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+@media (max-width: 700px) { .signal { top: auto; bottom: calc(80px + var(--sa-b)); transform: none; right: var(--gutter); } .signal__name { font-size: clamp(54px, 17vw, 96px); } }

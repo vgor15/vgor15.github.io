@@ -73,6 +73,14 @@
                   "/board":  {
                                  "title":  "Board :: Drive this site from a CAN board",
                                  "description":  "Drive Vyom Gor\u0027s portfolio from his 3D CAN dashboard board: flip the DIP switches to pick a page, turn the knob, press SEND and watch the LCD."
-                             }
+                             },
+                  "/work":  {
+                                "title":  "Work :: Projects by Vyom Gor",
+                                "description":  "The Memory Vault: every project Vyom Gor has built, from a two-node CAN dashboard on ARM7 to a Unix shell in C, with what each one does."
+                            },
+                  "/machine":  {
+                                   "title":  "Machine :: Skills and lab toys of Vyom Gor",
+                                   "description":  "C, Linux, embedded systems, systemd, networking, Git and debugging, plus interactive lab toys you can try right in the browser."
+                               }
               }
 }

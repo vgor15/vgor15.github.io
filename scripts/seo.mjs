@@ -4,7 +4,7 @@
 
 export const SITE_URL = "https://vgor15.github.io";
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const SECTIONS = { board: "Board", about: "About", lab: "Lab", writing: "Writing", bench: "Bench", contact: "Contact", resume: "Resume", now: "Now", notes: "Notes", changelog: "Changelog", record: "Record" };
+const SECTIONS = { work: "Work", machine: "Machine", board: "Board", about: "About", lab: "Lab", writing: "Writing", bench: "Bench", contact: "Contact", resume: "Resume", now: "Now", notes: "Notes", changelog: "Changelog", record: "Record" };
 const NOINDEX = new Set(["/404", "/record"]);
 const PERSON_ID = `${SITE_URL}/#person`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
@@ -217,6 +217,12 @@ export function prerender(route, S) {
       out.push(`<h3>Education</h3>${edu()}<h3>Skills</h3>${skills()}`);
       break;
     }
+    case "/work":
+      out.push(`<h2>Work</h2>` + list(S.work.map((w) => `<li>${link(w.href, w.title)} (${esc(w.year)}): ${esc(w.summary)}</li>`)));
+      break;
+    case "/machine":
+      out.push(`<h2>Skills</h2>${skills()}<h2>Try it yourself</h2>` + list(S.lab.map((l) => `<li>${link(`/lab/${l.slug}`, l.title)}: ${esc(l.desc)}</li>`)));
+      break;
     case "/lab":
       out.push(`<h2>Experiments</h2>` + list(S.lab.map((l) => `<li>${link(`/lab/${l.slug}`, l.title)}: ${esc(l.desc)}</li>`)));
       break;
