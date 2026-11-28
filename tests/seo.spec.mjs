@@ -72,7 +72,7 @@ test("crawlers without JavaScript can read the content and follow links", async 
 
 test("with JavaScript on, the crawler copy stays hidden", async ({ page }) => {
   await page.goto("/about");
-  await page.locator(".hdr").waitFor({ state: "attached" });
+  await page.locator("html[data-ready], .hdr").first().waitFor({ state: "attached" });
   await expect(page.locator(".prerender")).toBeHidden();
 });
 
@@ -104,6 +104,6 @@ test("pages embed their content, so they render without fetching content files",
   const contentRequests = [];
   page.on("request", (r) => { if (r.url().includes("/content/")) contentRequests.push(r.url()); });
   await page.goto("/bench");
-  await page.locator(".hdr").waitFor({ state: "attached" });
+  await page.locator("html[data-ready], .hdr").first().waitFor({ state: "attached" });
   expect(contentRequests).toEqual([]);
 });

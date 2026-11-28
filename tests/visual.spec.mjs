@@ -10,7 +10,7 @@ for (const path of PAGES) {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.addInitScript(() => { try { sessionStorage.setItem("vg-booted", "1"); } catch (e) {} });
     await page.goto(path);
-    await page.locator(".hdr").waitFor({ state: "attached" });
+    await page.locator("html[data-ready], .hdr").first().waitFor({ state: "attached" });
     await page.waitForTimeout(1200);
     const name = `${info.project.name}${path === "/" ? "-home" : path.replace(/\//g, "-")}.png`;
     await info.attach(name, { body: await page.screenshot({ fullPage: path !== "/" }), contentType: "image/png" });
