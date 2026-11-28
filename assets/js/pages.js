@@ -25,6 +25,7 @@ document.addEventListener("vg:ready", () => {
     const ext = /^https:\/\//.test(href);
     return `<a class="tag" href="${esc(href)}"${ext ? ' target="_blank" rel="noopener noreferrer"' : ""}>${esc(text)}${ext ? " ↗" : ""}</a>`;
   };
+  const isGitHub = (u) => { try { return new URL(u, location.href).hostname === "github.com"; } catch (e) { return false; } };
   if (PAGE === "work") {
     qs(".js-work").innerHTML = S.work.filter((w) => !w.hidden).map((w, i) => `
       <article class="now-card bezel" data-rv="${(i % 3) * 0.06}">
