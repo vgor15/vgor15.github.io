@@ -15,8 +15,8 @@ export function detectTier(gl) {
 
 export const TIERS = {
   high: { dprMax: 2, dprMin: 1, particles: 1, target: 58 },
-  mid: { dprMax: 1.5, dprMin: 0.75, particles: 0.6, target: 50 },
-  low: { dprMax: 1, dprMin: 0.6, particles: 0.35, target: 30 },
+  mid: { dprMax: 1.75, dprMin: 1, particles: 0.6, target: 50 },
+  low: { dprMax: 1.5, dprMin: 1, particles: 0.35, target: 30 },
 };
 
 export class Governor {

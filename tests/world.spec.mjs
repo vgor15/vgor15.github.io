@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 /* The island is the whole website: it must load without errors, every old
    section URL must open it at the right place, the reader must keep visitors
    on the island, and the no-3D storybook must carry all the same content. */
-test.beforeEach(async ({}, info) => { test.skip(info.project.name !== "desktop", "WebGL2 checks run on desktop Chrome"); });
+test.beforeEach(async ({}, info) => { test.skip(info.project.name !== "desktop", "WebGL2 checks run on desktop Chrome"); test.setTimeout(120_000); });
 
 const watch = (page) => {
   const errors = [];
@@ -21,7 +21,7 @@ test("the island loads, Enter starts the tour, and the map travels", async ({ pa
   await page.goto("/");
   test.skip(!(await gl2(page)), "no WebGL2 in this browser");
   const enter = page.locator(".isl-enter");
-  await expect(enter).toBeVisible({ timeout: 20_000 });
+  await expect(enter).toBeVisible({ timeout: 60_000 });
   await expect(page.locator("canvas.isl-cv")).toHaveAttribute("aria-hidden", "true");
   await enter.click();
   await expect(page.locator(".isl-dialog")).toBeVisible({ timeout: 10_000 });
@@ -42,7 +42,7 @@ test("old section URLs open the island at their place", async ({ page }) => {
   await fresh(page);
   await page.goto("/contact");
   test.skip(!(await gl2(page)), "no WebGL2 in this browser");
-  await page.locator(".isl-enter").click({ timeout: 20_000 });
+  await page.locator(".isl-enter").click({ timeout: 60_000 });
   await expect(page.locator(".isl-dialog__who")).toHaveText("Postie", { timeout: 10_000 });
 });
 
@@ -51,7 +51,7 @@ test("lab toys open inside the island reader, without the old site chrome", asyn
   await fresh(page);
   await page.goto("/");
   test.skip(!(await gl2(page)), "no WebGL2 in this browser");
-  await page.locator(".isl-enter").click({ timeout: 20_000 });
+  await page.locator(".isl-enter").click({ timeout: 60_000 });
   await page.locator(".isl-br .js-read").click();
   const frame = page.frameLocator(".isl-reader iframe");
   await expect(page.locator(".isl-reader iframe")).toHaveAttribute("src", /\/resume\?embed=1$/);

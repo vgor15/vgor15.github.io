@@ -10,19 +10,19 @@ export const ZONES = [
   { id: "plaza", name: "Welcome Plaza", icon: "📡", pos: [0, 0], r: 8, href: "/", color: "#ff6a3d",
     npc: { name: "VY-01", bot: true, at: [3.4, 3.6], voice: 880 } },
   { id: "workshop", name: "The Workshop", icon: "🛠️", pos: [23, -12], r: 9, href: "/work", color: "#ffb21e",
-    npc: { name: "Tink", at: [0, 6.2], voice: 520, look: { body: "#ffb21e", skin: "#8d5a3b", hat: "hardhat", hatColor: "#ffe14d", face: "grin", extra: "none" } } },
+    npc: { name: "Tink", at: [0, 6.2], voice: 520, look: { hair: "#151515", body: "#ffb21e", skin: "#8d5a3b", hat: "hardhat", hatColor: "#ffe14d", face: "grin", extra: "none" } } },
   { id: "garden", name: "Skill Garden", icon: "🌱", pos: [-23, -11], r: 9, href: "/machine", color: "#35c46a",
-    npc: { name: "Sprout", at: [3.4, 3.2], voice: 640, look: { body: "#35c46a", skin: "#ffd2a8", hat: "beanie", hatColor: "#ff5d8f", face: "smile", extra: "scarf" } } },
+    npc: { name: "Sprout", at: [3.4, 3.2], voice: 640, look: { hair: "#c0392b", body: "#35c46a", skin: "#ffd2a8", hat: "beanie", hatColor: "#ff5d8f", face: "smile", extra: "scarf" } } },
   { id: "busstop", name: "CAN Bus Stop", icon: "🚌", pos: [25, 14], r: 8, href: "/lab/can-bus", color: "#3d7bff",
-    npc: { name: "Captain Bus", at: [-2.6, 0.4], voice: 300, look: { body: "#3d7bff", skin: "#c68863", hat: "cap", hatColor: "#1d2a6b", face: "smile", extra: "none" } } },
+    npc: { name: "Captain Bus", at: [-2.6, 0.4], voice: 300, look: { hair: "#eeeeee", body: "#3d7bff", skin: "#c68863", hat: "cap", hatColor: "#1d2a6b", face: "smile", extra: "none" } } },
   { id: "arcade", name: "The Arcade", icon: "🕹️", pos: [-3, -26], r: 8, href: "/lab", color: "#a35cff",
-    npc: { name: "Pixel", at: [0, 2.8], voice: 1040, look: { body: "#a35cff", skin: "#ffe0bd", hat: "headphones", hatColor: "#ff2d95", face: "cool", extra: "none" } } },
+    npc: { name: "Pixel", at: [0, 2.8], voice: 1040, look: { hair: "#7b5cff", body: "#a35cff", skin: "#ffe0bd", hat: "headphones", hatColor: "#ff2d95", face: "cool", extra: "none" } } },
   { id: "house", name: "Vyom's House", icon: "🏡", pos: [-22, 14], r: 8, href: "/about", color: "#ff5d8f",
-    npc: { name: "Vyom", at: [0, 2.2], voice: 420, look: { body: "#2d2a7a", skin: "#c98b62", hat: "none", hatColor: "#111", face: "smile", extra: "backpack" } } },
+    npc: { name: "Vyom", at: [0, 2.2], voice: 420, look: { hair: "#151515", body: "#2d2a7a", skin: "#c98b62", hat: "none", hatColor: "#111", face: "smile", extra: "backpack" } } },
   { id: "post", name: "Post Office", icon: "📮", pos: [3, 26], r: 8, href: "/contact", color: "#ff3b3b",
-    npc: { name: "Postie", at: [-2.4, 1.6], voice: 720, look: { body: "#ff3b3b", skin: "#ffd2a8", hat: "cap", hatColor: "#ffffff", face: "grin", extra: "backpack" } } },
+    npc: { name: "Postie", at: [-2.4, 1.6], voice: 720, look: { hair: "#e3b26b", body: "#ff3b3b", skin: "#ffd2a8", hat: "cap", hatColor: "#ffffff", face: "grin", extra: "backpack" } } },
   { id: "library", name: "The Library", icon: "📚", pos: [12, -23], r: 8, href: "/writing", color: "#7b5cff",
-    npc: { name: "Page", at: [-2.2, 2.6], voice: 560, look: { body: "#7b5cff", skin: "#e8b48a", hat: "beanie", hatColor: "#ffd23f", face: "smile", extra: "scarf" } } },
+    npc: { name: "Page", at: [-2.2, 2.6], voice: 560, look: { hair: "#5a3825", body: "#7b5cff", skin: "#e8b48a", hat: "beanie", hatColor: "#ffd23f", face: "smile", extra: "scarf" } } },
 ];
 export const zone = (id) => ZONES.find((z) => z.id === id);
 
@@ -103,10 +103,11 @@ export const ACH = [
 /* Looks for the avatar maker. */
 export const LOOKS = {
   body: ["#ff6a3d", "#ffb21e", "#35c46a", "#3d7bff", "#a35cff", "#ff5d8f", "#2d2a7a", "#20c5c5"],
+  hair: ["#2b1d14", "#5a3825", "#a0522d", "#e3b26b", "#151515", "#c0392b", "#7b5cff", "#eeeeee"],
   skin: ["#ffe0bd", "#ffd2a8", "#e8b48a", "#c98b62", "#8d5a3b", "#5c3a24"],
   hat: ["none", "cap", "beanie", "hardhat", "headphones", "crown"],
   hatColor: ["#ffffff", "#1d2a6b", "#ffe14d", "#ff2d95", "#35c46a", "#111111"],
   face: ["smile", "grin", "cool", "wow"],
   extra: ["none", "backpack", "scarf", "cape"],
 };
-export const DEFAULT_LOOK = { body: "#3d7bff", skin: "#ffd2a8", hat: "cap", hatColor: "#ffe14d", face: "smile", extra: "none" };
+export const DEFAULT_LOOK = { body: "#3d7bff", skin: "#ffd2a8", hair: "#5a3825", hat: "cap", hatColor: "#ffe14d", face: "smile", extra: "none" };

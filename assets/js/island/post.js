@@ -1,7 +1,7 @@
 /* Cinematic pipeline: the island as a tiny physical model on a desk.
    RenderPass (4x MSAA, half-float) → SSAO contact shadows → tilt-shift blur
    (sharp band through the middle, soft top and bottom) → subtle high-threshold
-   bloom (lamps, beacon, windows at night) → OutputPass (tone mapping + sRGB).
+   bloom (lamps, beacon, windows at night) → SMAA → OutputPass (tone mapping + sRGB).
 
    Quality ladder, so it never lags:
      3 = SSAO + tilt-shift + bloom   (strong GPUs)
@@ -15,6 +15,7 @@ import { ShaderPass } from "/assets/vendor/jsm/postprocessing/ShaderPass.js";
 import { SSAOPass } from "/assets/vendor/jsm/postprocessing/SSAOPass.js";
 import { UnrealBloomPass } from "/assets/vendor/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "/assets/vendor/jsm/postprocessing/OutputPass.js";
+import { SMAAPass } from "/assets/vendor/jsm/postprocessing/SMAAPass.js";
 import { HorizontalTiltShiftShader } from "/assets/vendor/jsm/shaders/HorizontalTiltShiftShader.js";
 import { VerticalTiltShiftShader } from "/assets/vendor/jsm/shaders/VerticalTiltShiftShader.js";
 
@@ -30,15 +31,18 @@ export function createPipeline(renderer, scene, camera, tier) {
   Object.assign(ssao, { kernelRadius: 1.6, minDistance: 0.0006, maxDistance: 0.012 });
   const tiltH = new ShaderPass(HorizontalTiltShiftShader), tiltV = new ShaderPass(VerticalTiltShiftShader);
   const bloom = new UnrealBloomPass(new THREE.Vector2(w, h), 0.4, 0.6, 1.25);
+  // r160: multisampling lives on WebGLRenderTarget({ samples }) (WebGLMultisampleRenderTarget was removed in r138).
+  // SMAA then cleans any edge the MSAA target misses (shader edges, alpha-tested grass) without FXAA blur.
+  const smaa = new SMAAPass(w * px, h * px);
   const out = new OutputPass();
-  [render, ssao, tiltH, tiltV, bloom, out].forEach((p) => composer.addPass(p));
+  [render, ssao, tiltH, tiltV, bloom, smaa, out].forEach((p) => composer.addPass(p));
 
   let focus = 0.5;
   const tilt = (strength) => {
     tiltH.uniforms.h.value = strength / innerWidth; tiltV.uniforms.v.value = strength / innerHeight;
     tiltH.uniforms.r.value = tiltV.uniforms.r.value = focus; // the sharp band follows the character on screen
   };
-  let tiltStrength = 5.2;
+  let tiltStrength = 3.4;
   const apply = () => { ssao.enabled = level >= 3; tiltH.enabled = tiltV.enabled = bloom.enabled = level >= 2; tilt(tiltStrength); };
   apply();
 

@@ -171,25 +171,25 @@ function boot() {
     const fonts = D.fonts ? Promise.all([D.fonts.load('800 40px "Unbounded"'), D.fonts.load('600 20px "Geist"')]).catch(() => {}) : Promise.resolve();
     const mods = await Promise.all([
       import("/assets/vendor/three.module.min.js"), import("./world.js"), import("./avatar.js"), import("../world/quality.js"),
-      import("./post.js"), import("./materials.js"), import("/assets/vendor/jsm/renderers/CSS3DRenderer.js"),
+      import("./post.js"), import("./materials.js"), import("/assets/vendor/jsm/renderers/CSS3DRenderer.js"), import("/assets/vendor/jsm/controls/OrbitControls.js"),
     ]);
     goal = 45;
     await whenSite(); await fonts;
     run(...mods);
   })().catch((e) => { console.warn("[island] off:", e && e.message); html.classList.remove("isl-on"); ui.remove(); plain(); });
 
-  function run(THREE, { buildWorld, islandR, ROAD }, { makePerson, makeBot }, Q, { createPipeline }, M, { CSS3DRenderer, CSS3DObject }) {
+  function run(THREE, { buildWorld, islandR, ROAD }, { makePerson, makeBot }, Q, { createPipeline }, M, { CSS3DRenderer, CSS3DObject }, { OrbitControls }) {
     /* ---------- renderer: crisp on high-DPI screens, antialiased, sRGB ---------- */
     const canvas = D.createElement("canvas"); canvas.className = "isl-cv"; canvas.setAttribute("aria-hidden", "true");
     ui.prepend(canvas);
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance", stencil: false });
     const tier = Q.detectTier(renderer.getContext());
     M.setTier(tier);
-    const DPR_MAX = { high: 2, mid: 1.5, low: 1.25 }[tier];
+    const DPR_MAX = { high: 2, mid: 1.75, low: 1.5 }[tier]; // never below 1x: crisp, not pixelated
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, DPR_MAX));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.92;
-    renderer.shadowMap.enabled = tier !== "low"; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false;
     const W = buildWorld(renderer, tier);
     goal = 75;
     const { scene } = W;
@@ -206,6 +206,11 @@ function boot() {
     };
     addEventListener("resize", resize); resize();
     const gov = new Q.Governor(tier, (d) => { renderer.setPixelRatio(Math.min(d, DPR_MAX)); pipe.setSize(innerWidth, innerHeight); });
+    /* orbit camera while exploring: drag to turn, scroll / pinch to zoom; the polar limits keep it
+       above the ground (no peeking under the island) and it never pans away from you */
+    const controls = new OrbitControls(camera, canvas);
+    Object.assign(controls, { enableDamping: true, dampingFactor: 0.08, enablePan: false, minDistance: 11, maxDistance: 52, minPolarAngle: 0.32, maxPolarAngle: 1.2, rotateSpeed: 0.55, zoomSpeed: 0.8 });
+    controls.enabled = false;
 
     /* ---------- studio lighting: instant procedural studio, then the real HDRI ---------- */
     let pmrem = null;
@@ -215,36 +220,51 @@ function boot() {
     }
     const loadHDRI = () => {
       if (!pmrem) return;
-      import("/assets/vendor/jsm/loaders/RGBELoader.js").then(({ RGBELoader }) => new RGBELoader().load("/assets/hdri/studio_small_09_1k.hdr", (hdr) => {
+      import("/assets/vendor/jsm/loaders/RGBELoader.js").then(({ RGBELoader }) => new RGBELoader().load("/assets/hdri/belfast_sunset_1k.hdr", (hdr) => {
         const env = pmrem.fromEquirectangular(hdr).texture; hdr.dispose();
         const old = scene.environment; scene.environment = env; if (old && old !== env) old.dispose();
       }, undefined, () => {})).catch(() => {});
     };
 
     /* ---------- characters ---------- */
-    const player = makePerson({ ...save.look });
+    // every character sits in a holder, so a realistic model can replace the stand-in in place
+    const holderFor = (inner) => {
+      const root = new THREE.Group(); root.add(inner.root);
+      return { root, get inner() { return inner; }, get realistic() { return !!inner.realistic; }, set talking(v) { inner.talking = v; }, setLook: (l) => inner.setLook(l), update: (dt, t, s) => inner.update(dt, t, s), swap(n) { root.remove(inner.root); inner = n; root.add(n.root); } };
+    };
+    const player = holderFor(makePerson({ ...save.look }));
     player.root.position.set(0, 0, 11.5); player.root.rotation.y = Math.PI;
     scene.add(player.root);
     const bot = makeBot(); bot.root.position.set(3.4, 0, 3.6); scene.add(bot.root);
+    // the animated robot (CC0, three.js examples) replaces the stand-in once it has loaded
+    import("/assets/vendor/jsm/loaders/GLTFLoader.js").then(({ GLTFLoader }) => new GLTFLoader().load("/assets/models/RobotExpressive.glb", (g) => { bot.upgrade(g); M.polish(scene, renderer); }, undefined, () => {})).catch(() => {});
     const npcs = {};
     ZONES.forEach((z) => {
       const spot = W.npcSpot(z);
       if (z.npc.bot) { npcs[z.id] = { who: bot, spot, z, bot: true }; return; }
-      const p = makePerson({ ...z.npc.look }); p.root.position.copy(spot.pos); p.root.rotation.y = spot.face; scene.add(p.root);
+      const p = holderFor(makePerson({ ...z.npc.look })); p.root.position.copy(spot.pos); p.root.rotation.y = spot.face; scene.add(p.root);
       W.colliders.push({ x: spot.pos.x, z: spot.pos.z, r: 0.8 });
       npcs[z.id] = { who: p, spot, z, home: spot.face };
     });
+    // realistic, animated characters: you are the rigged Mixamo model, residents are tinted mannequins
+    const heroes = tier === "low" ? Promise.resolve(null) : import("./hero.js").then(async (H) => {
+      player.swap(await H.makeHero({ url: "/assets/models/vyom/vyom.glb", height: 2.35, look: save.look }));
+      for (const n of Object.values(npcs)) if (!n.bot) n.who.swap(await H.makeHero({ url: "/assets/models/xbot/Xbot.glb", height: 2.3, tint: n.z.color, look: n.z.npc.look }));
+      M.polish(scene, renderer);
+      return H;
+    }).catch((e) => { console.warn("[island] realistic characters off:", e && e.message); return null; });
     const marker = new THREE.Mesh(new THREE.RingGeometry(0.45, 0.7, 28), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false }));
     marker.rotation.x = -Math.PI / 2; marker.position.y = 0.08; scene.add(marker);
     // chips already found on an earlier visit stay found
     const chipItems = W.chipIds.map((id) => W.spawner.items[id]);
     save.chips = (save.chips || []).filter((i) => i < chipItems.length);
     save.chips.forEach((i) => { const it = chipItems[i]; it.visible = false; it.k = 0; it.hiding = true; W.spawner.write(it); });
+    M.polish(scene, renderer);
     renderer.shadowMap.needsUpdate = true;
 
     /* ---------- state ---------- */
     const S = {
-      mode: "intro", yaw: 0, pitch: 0.92, dist: 30, yawT: 0, pitchT: 0.92, distT: 30,
+      mode: "intro", yaw: 0, pitch: 0.86, dist: 23, yawT: 0, pitchT: 0.86, distT: 23,
       target: null, onArrive: null, speed: 0, keys: new Set(), near: null, nearSeen: null, talking: null, talkWith: null,
       camPos: new THREE.Vector3(0, 120, 170), camLook: new THREE.Vector3(), t: 0, stepT: 0, towerTaps: 0, rideFrom: 0, stuck: 0,
     };
@@ -263,7 +283,7 @@ function boot() {
     };
     const unlock = (id) => {
       if (save.ach[id]) return; const a = ACH.find((x) => x.id === id); if (!a) return;
-      save.ach[id] = Date.now(); persist(); refreshCount(); toast(a.icon, "Achievement unlocked", a.title); sound.fanfare();
+      save.ach[id] = Date.now(); persist(); refreshCount(); toast(a.icon, "Achievement unlocked", a.title); sound.fanfare(); bot.emote("ThumbsUp");
       if (id.startsWith("visit-") && ZONES.every((z) => save.ach["visit-" + z.id])) setTimeout(() => { unlock("explorer"); queue(LINES.explorer(), "VY-01", 880); }, 900);
     };
 
@@ -311,7 +331,7 @@ function boot() {
     function styleSheet() {
       const row = (k, title, swatch) => `<fieldset class="isl-opt"><legend>${title}</legend><div>${LOOKS[k].map((v) => swatch ? `<button type="button" class="isl-sw js-look" data-k="${k}" data-v="${v}" style="--c:${v}" aria-pressed="${save.look[k] === v}" aria-label="${title} ${v}"></button>` : `<button type="button" class="isl-chip js-look" data-k="${k}" data-v="${v}" aria-pressed="${save.look[k] === v}">${LABEL[k][v]}</button>`).join("")}</div></fieldset>`;
       openSheet("style", `<p class="isl-kicker">🧢 Avatar maker</p><h2 id="isl-sheet-h" class="isl-h">Make it yours</h2>
-        ${row("body", "Outfit", true)}${row("skin", "Skin", true)}${row("hat", "Hat")}${row("hatColor", "Hat colour", true)}${row("face", "Face")}${row("extra", "Extra")}
+        ${player.realistic ? `<p class="isl-lede">You're a fully rigged, realistic character now. Top it off with a hat.</p>${row("hat", "Hat")}${row("hatColor", "Hat colour", true)}` : `${row("body", "Outfit", true)}${row("skin", "Skin", true)}${row("hair", "Hair", true)}${row("hat", "Hat")}${row("hatColor", "Hat colour", true)}${row("face", "Face")}${row("extra", "Extra")}`}
         <p class="isl-more"><button type="button" class="isl-btn js-rand">🎲 Surprise me</button><button type="button" class="isl-btn isl-btn--go js-done">Looking good!</button></p>`, "isl-sheet--side");
       S.mode = "style";
     }
@@ -438,14 +458,12 @@ function boot() {
     canvas.addEventListener("pointermove", (e) => {
       if (e.pointerType === "mouse") { mouse = [e.clientX, e.clientY]; hoverDirty = true; }
       if (!pointers.has(e.pointerId)) return; const prev = pointers.get(e.pointerId); pointers.set(e.pointerId, [e.clientX, e.clientY]);
-      if (pointers.size === 2) { const [a, b] = [...pointers.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]); S.distT = Math.min(58, Math.max(13, S.distT * (pinch / Math.max(1, d)))); pinch = d; dragged = true; return; }
-      if (Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 7) dragged = true;
-      if (dragged && S.mode !== "intro") { S.yawT -= (e.clientX - prev[0]) * 0.006; S.pitchT = Math.min(1.35, Math.max(0.42, S.pitchT + (e.clientY - prev[1]) * 0.004)); }
+      // turning and zooming belong to OrbitControls; here we only tell a click from a drag
+      if (pointers.size === 2 || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 7) dragged = true;
     });
     canvas.addEventListener("pointerleave", () => { mouse = null; hoverDirty = true; });
     const up = (e) => { pointers.delete(e.pointerId); if (!dragged && downAt && S.mode !== "intro" && S.mode !== "bus") pick(e.clientX, e.clientY); downAt = null; };
     canvas.addEventListener("pointerup", up); canvas.addEventListener("pointercancel", (e) => pointers.delete(e.pointerId));
-    canvas.addEventListener("wheel", (e) => { e.preventDefault(); S.distT = Math.min(58, Math.max(13, S.distT * (1 + Math.sign(e.deltaY) * 0.1))); }, { passive: false });
     function pick(x, y) {
       const r = castAt(x, y);
       if (r && r.chip) { const c = r.chip; W.shock(c.x, c.z, S.t, 0.6); return walkTo(new THREE.Vector3(c.x, 0, c.z)); }
@@ -519,6 +537,8 @@ function boot() {
       setTimeout(() => ui.querySelector(".isl-load").remove(), 900);
       html.classList.add("isl-in"); S.mode = "follow"; S.yaw = S.yawT = 0;
       unlock("hello"); wake(); loadHDRI();
+      W.texturize(); // photo-scanned ground, sand, gravel, asphalt and bark, plus real ferns and grass clumps
+      heroes.then((H) => H && W.plants(H.loadModel)).then(() => { M.polish(scene, renderer); renderer.shadowMap.needsUpdate = true; }).catch(() => {});
       setTimeout(() => {
         if (START !== "plaza") { const st = npcs[START].spot.stand; player.root.position.copy(st); S.camPos.set(st.x, 40, st.z + 40); talkTo(START); return; }
         if (!save.intro) { frameTalk(npcs.plaza); say(LINES.intro(), "VY-01", 880, () => { save.intro = true; persist(); }); }
@@ -633,12 +653,25 @@ function boot() {
       else if (S.mode === "style") { const wide = innerWidth > 760, sx = wide ? 3.2 : 0, d = 14 * fk; look3 = tmpL.set(p.x + Math.cos(ry) * sx, wide ? 1.5 : -0.4, p.z - Math.sin(ry) * sx); pos3 = tmpV.set(p.x + Math.sin(ry) * d + Math.cos(ry) * sx, 4.6, p.z + Math.cos(ry) * d - Math.sin(ry) * sx); }
       else if (S.mode === "talk" && S.talkWith) {
         const o = S.talkWith.bot ? bp : S.talkWith.who.root.position, mid = p.clone().lerp(o, 0.5), narrow = innerWidth < innerHeight;
-        look3 = tmpL.copy(mid).setY(narrow ? -2.6 : -1.6); const d = (narrow ? 31 : 24) * fk, pt = 0.68;
+        look3 = tmpL.copy(mid).setY(narrow ? -1.4 : -0.7); const d = (narrow ? 21 : 15) * fk, pt = 0.62;
         pos3 = tmpV.set(mid.x + Math.sin(S.yaw) * Math.cos(pt) * d, 1.8 + Math.sin(pt) * d, mid.z + Math.cos(S.yaw) * Math.cos(pt) * d);
       } else { const d = S.dist * fk; look3 = tmpL.copy(p).setY(1.4); pos3 = tmpV.set(p.x + Math.sin(S.yaw) * Math.cos(S.pitch) * d, 1.4 + Math.sin(S.pitch) * d, p.z + Math.cos(S.yaw) * Math.cos(S.pitch) * d); }
-      const k = REDUCED ? 1 : Math.min(1, dt * (S.mode === "intro" ? 1 : 3.2));
-      S.camPos.lerp(pos3, k); S.camLook.lerp(look3, k);
-      camera.position.copy(S.camPos); camera.lookAt(S.camLook);
+      // exploring: OrbitControls owns the camera once the hand-off from a scripted shot has settled
+      if (S.mode !== S.lastMode) { if (S.mode === "follow") S.settle = REDUCED ? 0 : 1.1; S.lastMode = S.mode; }
+      if (S.mode === "follow" && (S.settle -= dt) <= 0) {
+        if (!controls.enabled) { controls.target.copy(S.camLook); controls.enabled = true; }
+        const goal = tmpL.copy(p).setY(1.4), before = controls.target.clone();
+        controls.target.lerp(goal, Math.min(1, dt * 6));
+        camera.position.add(controls.target.clone().sub(before)); // the camera travels with you
+        controls.update();
+        S.yaw = S.yawT = Math.atan2(camera.position.x - controls.target.x, camera.position.z - controls.target.z);
+        S.camPos.copy(camera.position); S.camLook.copy(controls.target);
+      } else {
+        controls.enabled = false;
+        const k = REDUCED ? 1 : Math.min(1, dt * (S.mode === "intro" ? 1 : 3.2));
+        S.camPos.lerp(pos3, k); S.camLook.lerp(look3, k);
+        camera.position.copy(S.camPos); camera.lookAt(S.camLook);
+      }
 
       /* spatial UI faces the camera and tilts with it */
       const showTags = S.mode === "follow" || S.mode === "talk";

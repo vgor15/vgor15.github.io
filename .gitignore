@@ -20,3 +20,6 @@ test-results/
 playwright-report/
 blob-report/
 .lighthouseci/
+
+# raw 3D downloads (too big for the repo; optimised copies live in assets/models)
+3d obj/
