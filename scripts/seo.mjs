@@ -4,7 +4,7 @@
 
 export const SITE_URL = "https://vgor15.github.io";
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const SECTIONS = { about: "About", lab: "Lab", writing: "Writing", bench: "Bench", contact: "Contact", resume: "Resume", now: "Now", notes: "Notes", changelog: "Changelog", record: "Record" };
+const SECTIONS = { board: "Board", about: "About", lab: "Lab", writing: "Writing", bench: "Bench", contact: "Contact", resume: "Resume", now: "Now", notes: "Notes", changelog: "Changelog", record: "Record" };
 const NOINDEX = new Set(["/404", "/record"]);
 const PERSON_ID = `${SITE_URL}/#person`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
