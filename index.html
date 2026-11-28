@@ -23,6 +23,8 @@
   <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/site.css">
+  <link rel="stylesheet" href="/assets/css/island.css">
+  <link rel="modulepreload" href="/assets/js/island/main.js">
   <script src="/assets/js/frame-guard.js"></script>
   <script src="/assets/js/theme-boot.js"></script>
 </head>
@@ -34,7 +36,7 @@
       <p class="signal__name" aria-hidden="true"><span>Vyom</span><span>Gor</span></p>
       <p class="signal__role js-sig-role">Embedded Software Engineer</p>
       <p class="signal__tag js-sig-tag">Close to the metal. Clear in the mind.</p>
-      <div class="signal__cta"><a class="btn btn--ink" href="/work">Enter the vault</a><a class="btn" href="/machine">Open the machine</a><a class="btn" href="/contact">Transmit</a></div>
+      <div class="signal__cta"><a class="btn btn--ink js-island-on" href="/">Explore the island</a><a class="btn" href="/work">Enter the vault</a><a class="btn" href="/machine">Open the machine</a><a class="btn" href="/contact">Transmit</a></div>
     </section>
     <section class="home" role="group" aria-label="Selected work, two linked wheels. Drag or scroll to turn, arrow keys browse, the centre link opens the project." aria-roledescription="carousel">
       <div class="wheel wheel--l"></div>
@@ -52,6 +54,7 @@
   <script src="/assets/js/can.js"></script>
   <script src="/assets/js/core.js"></script>
   <script src="/assets/js/fun.js"></script>
+  <script type="module" src="/assets/js/island/main.js"></script>
   <script type="module" src="/assets/js/world/boot.js"></script>
   <script src="/assets/js/home.js"></script>
   <script src="/assets/js/schematic.js"></script>

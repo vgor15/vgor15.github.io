@@ -1129,3 +1129,59 @@ html:not(.plain) body[data-page="work"] .page-lede, html:not(.plain) body[data-p
 .tx__ring { position: absolute; left: 0; top: 0; width: 20px; height: 20px; margin: -10px 0 0 -10px; border-radius: 50%; border: 2px solid #3ef2ff; animation: tx-ring .9s ease-out forwards; }
 @keyframes tx-beam { 0% { height: 0; opacity: 1; } 60% { height: 120vh; opacity: 1; } 100% { height: 120vh; opacity: 0; transform: translateY(-40vh); } }
 @keyframes tx-ring { from { transform: scale(.4); opacity: 1; } to { transform: scale(9); opacity: 0; } }
+
+/* ============================================================
+   TOY THEME (day): every page matches Vyom Island.
+   Sky background, white rounded cards, chunky pill buttons,
+   bold display headings. Night keeps the starry look.
+   ============================================================ */
+:root:not([data-theme="dark"]) {
+  --paper: #eaf6ff;
+  --surface: #ffffff;
+  --card: #ffffff;
+  --ink: #1d1a4f;
+  --ink-muted: #1d1a4fc2;
+  --ink-faint: #1d1a4fa6;
+  --fill: #1d1a4f0f;
+  --fill-strong: #1d1a4f26;
+  --line: #1d1a4f14;
+  --divider: #1d1a4f26;
+  --chip: #dcecff;
+  --gold: #3d5bff;
+  --gold-soft: #ff3d7f;
+  --gold-text: #2f49e0;
+  --gold-wash: #3d5bff1a;
+  --ember: #d9480f;
+  --panel: #1d1a4f;
+  --panel-ink: #ffffff;
+  --panel-muted: #ffffffa8;
+  --scrim: #1d1a4f55;
+  --shadow-control: 0 2px 0 #1d1a4f12, 0 8px 18px -10px #1d1a4f55;
+  --shadow-card: 0 3px 0 #1d1a4f0d, 0 18px 36px -20px #1d1a4f66;
+  --shadow-modal: 0 30px 70px -24px #1d1a4f80;
+  --grain-opacity: 0;
+}
+[data-theme="light"] body { background: linear-gradient(180deg, #bfe6ff 0, #e3f3ff 320px, #f4f9ff 900px) fixed; }
+[data-theme="light"] body::before { content: ""; position: fixed; inset: 0 0 auto; height: 260px; pointer-events: none; z-index: -1;
+  background: radial-gradient(60px 26px at 12% 70px, #fff 98%, #0000), radial-gradient(44px 22px at 16% 58px, #fff 98%, #0000), radial-gradient(70px 28px at 84% 120px, #fffd 98%, #0000), radial-gradient(48px 22px at 80% 104px, #fffd 98%, #0000);
+  opacity: .8; animation: toy-clouds 60s linear infinite alternate; }
+@keyframes toy-clouds { to { transform: translateX(40px); } }
+[data-theme="light"] .h-page, [data-theme="light"] .post h1, [data-theme="light"] .exp__meta h1 { font-weight: 900; letter-spacing: -0.05em; color: var(--ink); text-shadow: 0 4px 0 #ffffff; }
+[data-theme="light"] .btn { height: 40px; padding: 0 18px; border-radius: 999px; background: #fff; box-shadow: var(--shadow-control); font-family: var(--display); font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: .02em; transition: transform .2s, background .2s, color .2s; }
+[data-theme="light"] .btn:hover { background: var(--ink); color: #fff; transform: translateY(-2px); }
+[data-theme="light"] .btn--ink { background: #d63d12; color: #fff; box-shadow: inset 0 -4px 0 #0002, 0 10px 20px -10px #ff6a3d; }
+[data-theme="light"] .btn--ink:hover { background: #c2185b; }
+html[data-theme="light"]:not(.plain) body[data-page] .page-lede { margin-bottom: 48px; }
+[data-theme="light"] .navpill, [data-theme="light"] .themeseg, [data-theme="light"] .seg, [data-theme="light"] .iconbtn { border-radius: 999px; }
+[data-theme="light"] .navpill a, [data-theme="light"] .themeseg button, [data-theme="light"] .seg button { border-radius: 999px; }
+[data-theme="light"] .navpill a { font-weight: 600; }
+[data-theme="light"] .tag { border-radius: 999px; background: var(--chip); color: var(--gold-text); }
+[data-theme="light"] .now-card, [data-theme="light"] .exp__stage, [data-theme="light"] .lab-card__pv, [data-theme="light"] .cal-frame, [data-theme="light"] .sheet, [data-theme="light"] .pal { border-radius: 24px; }
+[data-theme="light"] main article, [data-theme="light"] .js-work article, [data-theme="light"] .js-skills section, [data-theme="light"] .js-toys article { border-radius: 22px; }
+[data-theme="light"] .label { color: #d1205f; }
+[data-theme="light"] ::selection { background: #ff3d7f; }
+.toy-home { position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom)); translate: -50% 0; z-index: 40; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px 0 8px; border-radius: 999px; background: #fff; color: #1d1a4f; box-shadow: 0 10px 24px -10px #1d1a4f80; font: 800 12px var(--display); text-transform: uppercase; letter-spacing: .03em; }
+.toy-home span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #72d65e; font-size: 15px; }
+.toy-home:hover { transform: translateY(-2px); }
+[data-page="home"] .toy-home, [data-page="board"] .toy-home { display: none; }
+@media print { .toy-home { display: none; } }

@@ -96,6 +96,7 @@
 
     D.body.append(make('<div class="scrim" aria-hidden="true"></div>'));
     D.body.append(make(`<div class="toast" role="status" aria-live="polite"><b></b><span></span></div>`));
+    if (D.body.dataset.page !== "home") D.body.append(make(`<a class="toy-home" href="/"><span aria-hidden="true">🏝️</span>Back to the island</a>`));
     D.body.append(make(`<div class="veil" aria-hidden="true"><div class="veil__sheet"></div></div>`));
 
     if (!D.body.hasAttribute("data-no-info")) {
@@ -172,7 +173,7 @@
   }
   function setTheme(pref) { store.set("vg-theme", pref); applyTheme(pref); }
   function initTheme() {
-    applyTheme(html.getAttribute("data-pref") || "dark");
+    applyTheme(html.getAttribute("data-pref") || "light");
     D.addEventListener("click", (e) => {
       const b = e.target.closest("[data-theme-set]");
       if (b) setTheme(b.dataset.themeSet);

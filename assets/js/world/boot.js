@@ -10,7 +10,7 @@ const hasGL2 = (() => { try { return !!document.createElement("canvas").getConte
 let engine = null, loading = null;
 html.classList.toggle("plain", pref.get());
 
-const wanted = () => !pref.get() && !REDUCED && hasGL2 && html.getAttribute("data-theme") === "dark";
+const wanted = () => !pref.get() && !REDUCED && hasGL2 && html.getAttribute("data-theme") === "dark" && !html.classList.contains("isl-on");
 
 async function on() {
   if (engine || loading || !wanted()) return;
