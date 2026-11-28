@@ -32,7 +32,7 @@ document.addEventListener("vg:ready", () => {
         <h2>${esc(w.year)} · ${esc(w.by)}</h2>
         <h3 style="font:700 22px/1.1 var(--display);letter-spacing:-.03em;margin:6px 0 8px">${esc(w.title)}</h3>
         <p style="color:var(--ink-muted)">${esc(w.summary)}</p>
-        <p style="margin-top:12px">${link(w.href, /github\.com/.test(w.href || "") ? "Code on GitHub" : "Open it")}</p>
+        <p style="margin-top:12px">${link(w.href, isGitHub(w.href) ? "Code on GitHub" : "Open it")}</p>
       </article>`).join("");
   }
   if (PAGE === "machine") {
